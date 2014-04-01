@@ -1,18 +1,17 @@
 var serverAddr = "http://127.0.0.1:8888";
 
 $(document).ready(function(){
-	$("#search" ).click(function(){
+	function showTweets(tweets){
+		
+	}
+	
+	$("#search").click(function(){
 		var keyword = $("#keyword").val();
 		
 		if(keyword.length > 0){
-			$.ajax({
-				type: "post",
-				url: serverAddr + "/classify",
-				data:{
-					"keyword": keyword
-				}
-			}).done(function(data){
-				console.log(data);
+			$.get(serverAddr + "/classify", {"keyword": keyword}, function(data){
+				tweets = JSON.parse(data);
+				showTweets(tweets);
 			});
 		}		
 	});

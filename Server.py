@@ -6,16 +6,31 @@ Created on Mar 31, 2014
 import tornado.ioloop
 import tornado.web
 import os
+import json
 from TwitterSearch import * 
+
+def encodeTweet(obj):
+    if isinstance(obj, Tweet):
+        return obj.__dict__
+    return obj
+
+#Tweet Class
+class Tweet:
+    def __init__(self, tweetID, tweet, date):
+        self.id = tweetID
+        self.tweet = tweet
+        self.date = date
 
 #get sizeLimit tweets from the Twitter
 def getTweets(keyword):
-    sizeLimit = 1000
+    sizeLimit = 200
     curSize = 0
+    tweetList = []
+    
     try:
         tso = TwitterSearchOrder() 
         tso.setKeywords([keyword]) 
-        tso.setLanguage('en') 
+        tso.setLanguage("en") 
         tso.setCount(100) 
         tso.setIncludeEntities(False) 
         
@@ -27,11 +42,14 @@ def getTweets(keyword):
          )
 
         for tweet in ts.searchTweetsIterable(tso): 
-            tweetsSize = ts.getStatistics()['tweets']
+            tweetsSize = ts.getStatistics()["tweets"]
             curSize += tweetsSize 
-            print( '%d curID: %d\n\n' % (tweet['id'], curSize))
+            tweetEntity = Tweet(tweet["id"], tweet["text"], tweet["created_at"])
+            tweetList.append(tweetEntity)
+            
             if curSize > sizeLimit:
                 break
+        return json.dumps(tweetList, default = encodeTweet)        
 
     except TwitterSearchException as e: 
         print(e)
@@ -41,9 +59,13 @@ class MainHandler(tornado.web.RequestHandler):
         self.render("index.html")
 
 class ClassifierHandler(tornado.web.RequestHandler):
-    def post(self):
+    def get(self):
         keyword = self.get_argument("keyword")
-        getTweets(keyword)
+        tweets = getTweets(keyword)
+        print keyword
+        self.write(tweets)
+        self.flush()
+        self.finish()
         
 settings = {
     "static_path": os.path.join(os.path.dirname(__file__), "static"),
