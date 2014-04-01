@@ -16,9 +16,9 @@ def encodeTweet(obj):
 
 #Tweet Class
 class Tweet:
-    def __init__(self, tweetID, tweet, date):
+    def __init__(self, tweetID, text, date):
         self.id = tweetID
-        self.tweet = tweet
+        self.text = text
         self.date = date
 
 #get sizeLimit tweets from the Twitter
@@ -68,14 +68,14 @@ class ClassifierHandler(tornado.web.RequestHandler):
         self.finish()
         
 settings = {
-    "static_path": os.path.join(os.path.dirname(__file__), "static"),
-    "lib_path": os.path.join(os.path.dirname(__file__), "lib")
+    "static_path": os.path.join(os.path.dirname(__file__), "static")
 }
 
 application = tornado.web.Application(
                 [(r"/", MainHandler),
                 (r"/classify", ClassifierHandler),
                 (r"/main.js", tornado.web.StaticFileHandler, dict(path=settings["static_path"])),
+                (r"/style.css", tornado.web.StaticFileHandler, dict(path=settings["static_path"])),
                 (r"/jquery-1.11.0.min.js", tornado.web.StaticFileHandler, dict(path=settings["static_path"])),
                 ], **settings);
 
