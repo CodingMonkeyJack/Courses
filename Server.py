@@ -7,7 +7,7 @@ import tornado.ioloop, tornado.web
 import os, json, csv, nltk, itertools, re, string, math
 from TwitterSearch import * 
 from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 
 def containsAlpha(token):
     for c in token: 
@@ -15,28 +15,43 @@ def containsAlpha(token):
             return True
     return False
 
+#map the pos tag in treebank to the pos tag in wordnet, only verb, adjective, adverb, noun are left
+def getWordNetPos(treebankPos):
+    if treebankPos.startswith("NN"): return "n"
+    elif treebankPos.startswith("JJ"): return "a"
+    elif treebankPos.startswith("RB"): return "r"
+    elif treebankPos.startswith("VB"): return "v"
+    else: return None
+    
 '''
 Check Agarwaletal11 paper
 (1) Tokenization
-(2) Delete URL and @name
-(3) Remove the stop words, punctuation, numbers
+(2) All tokens are transformed into the lowercase
+(3) Delete URL and @name
+(4) Remove the stop words, punctuation, numbers
 '''
 def processTweet(tweetText):
     tweetText = re.sub(r"http\S*|@\S*", "", tweetText)   #delete the url and @name
-    #Need to transform the emoticon to the words
-    tokenSents = [word_tokenize(sent) for sent in sent_tokenize(tweetText)]
-    preTokens = list(itertools.chain.from_iterable(tokenSents))
+    sents = sent_tokenize(tweetText)
+    lmtzr = nltk.stem.wordnet.WordNetLemmatizer()
     tokens = []
     
-    for token in preTokens:
-        token = token.lower()
-        if token not in stopwords.words("english") and string.punctuation.find(token) == -1 and containsAlpha(token):
-            tokens.append(token)
-    #print tokens
+    for sent in sents:
+        sentTokens = word_tokenize(sent)
+        taggedTokens = nltk.pos_tag(sentTokens)
+        for taggedToken in taggedTokens:
+            token = taggedToken[0].lower()
+            if token not in stopwords.words("english") and string.punctuation.find(token) == -1 and containsAlpha(token):
+                pos = getWordNetPos(taggedToken[1])
+                if pos is not None: 
+                    tokens.append(lmtzr.lemmatize(token, pos))
     return tokens
 
 '''
 We need to shrink the features
+TODO: 
+(1) Expand the word
+(2) Wordnet to lemmatization
 '''
 def preprocessing(file, posDict, negDict):
     with open(file, "r") as trainingFile:
