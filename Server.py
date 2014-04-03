@@ -22,7 +22,33 @@ def getWordNetPos(treebankPos):
     elif treebankPos.startswith("RB"): return "r"
     elif treebankPos.startswith("VB"): return "v"
     else: return None
+
+#convert gooood to goood
+def convertWord(word):
+    newWord = ""
+    curLetter = ''
+    curFreq = 0
     
+    for letter in word:
+        if letter != curLetter:
+            curLetter = letter
+            curFreq = 1
+            newWord += letter
+        elif curFreq < 3:
+            curFreq += 1
+            newWord += letter
+    return newWord
+    
+def loadSlangDict(file):
+    slangDict = {}
+    with open(file, "r") as slangFile:
+        for line in slangFile:
+            words = line.split()
+            key = words[0].lower()
+            value = " ".join([word.lower() for word in words[1:]])
+            slangDict[key] = value
+    return slangDict
+
 '''
 Check Agarwaletal11 paper
 (1) Tokenization
@@ -30,7 +56,7 @@ Check Agarwaletal11 paper
 (3) Delete URL and @name
 (4) Remove the stop words, punctuation, numbers
 '''
-def processTweet(tweetText):
+def processTweet(tweetText, slangDict):
     tweetText = re.sub(r"http\S*|@\S*", "", tweetText)   #delete the url and @name
     sents = sent_tokenize(tweetText)
     lmtzr = nltk.stem.wordnet.WordNetLemmatizer()
@@ -40,8 +66,8 @@ def processTweet(tweetText):
         sentTokens = word_tokenize(sent)
         taggedTokens = nltk.pos_tag(sentTokens)
         for taggedToken in taggedTokens:
-            token = taggedToken[0].lower()
-            if token not in stopwords.words("english") and string.punctuation.find(token) == -1 and containsAlpha(token):
+            token = convertWord(taggedToken[0].lower())
+            if token not in stopwords.words("english") and string.punctuation.find(token) == -1 and containsAlpha(token) and len(token) > 1:
                 pos = getWordNetPos(taggedToken[1])
                 if pos is not None: 
                     tokens.append(lmtzr.lemmatize(token, pos))
@@ -51,16 +77,17 @@ def processTweet(tweetText):
 We need to shrink the features
 TODO: 
 (1) Expand the word
-(2) Wordnet to lemmatization
 '''
 def preprocessing(file, posDict, negDict):
+    slangDict = loadSlangDict("dataset/SlangDict.txt")
+    
     with open(file, "r") as trainingFile:
         posCnt = negCnt = 0
         
         reader = csv.reader(trainingFile)
         for tweet in reader:
             tweetText = tweet[5]
-            tokens = processTweet(tweetText)             
+            tokens = processTweet(tweetText, slangDict)             
             polarityFlag = int(tweet[0])
             if polarityFlag == 0:   #negative
                 tokenDict = negDict
@@ -95,7 +122,19 @@ class BayesClassifier():
             else:
                 prob += math.log(1.0 / freqSum)
         return prob
-        
+    
+    def printDict(self, dict):
+        for key in dict.keys():
+            print key + " " + str(dict[key])
+        print "***************************8"
+    
+    def shrinkFeatures(self, preDict):
+        posDict = {}
+        for key in preDict.keys():
+            if preDict[key] > 1:
+                posDict[key] = preDict[key]
+        return posDict
+    
     def classify(self):
         posDict = {}
         negDict = {}
@@ -104,9 +143,11 @@ class BayesClassifier():
         prePosProb = math.log(float(posCnt) / (negCnt + posCnt))
         correctCnt = totalCnt = 0
         
-        print negDict
-        print posDict
-        with open("dataset/testdata.csv", "r") as testFile:
+        #negDict = self.shrinkFeatures(negDict)
+        #posDict = self.shrinkFeatures(posDict)
+        self.printDict(negDict)
+        self.printDict(posDict)
+        '''with open("dataset/testdata.csv", "r") as testFile:
             reader = csv.reader(testFile)
             for tweet in reader:
                 if(int(tweet[0]) == 2): #we don't consider the neutral class current now
@@ -123,7 +164,7 @@ class BayesClassifier():
                     correctCnt += 1
         print totalCnt
         accuracy = float(correctCnt) / totalCnt
-        print accuracy
+        print accuracy'''
                     
 
 def SVMClassifier():
