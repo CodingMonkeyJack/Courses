@@ -58,10 +58,23 @@ Check Agarwaletal11 paper
 '''
 def processTweet(tweetText, slangDict):
     tweetText = re.sub(r"http\S*|@\S*", "", tweetText)   #delete the url and @name
+    flag = 0
+    words = tweetText.split()
+    for word in words:
+        key = word.lower()
+        if slangDict.has_key(key):
+            flag = 1
+            #print "WORD:" + word
+            tweetText = tweetText.replace(word, slangDict[key])
     sents = sent_tokenize(tweetText)
     lmtzr = nltk.stem.wordnet.WordNetLemmatizer()
     tokens = []
     
+    '''if flag == 1:
+        print "PRE:" + preText
+        print "POS:" + tweetText
+        print "**************************************"'''
+            
     for sent in sents:
         sentTokens = word_tokenize(sent)
         taggedTokens = nltk.pos_tag(sentTokens)
@@ -78,9 +91,7 @@ We need to shrink the features
 TODO: 
 (1) Expand the word
 '''
-def preprocessing(file, posDict, negDict):
-    slangDict = loadSlangDict("dataset/SlangDict.txt")
-    
+def preprocessing(file, posDict, negDict, slangDict):
     with open(file, "r") as trainingFile:
         posCnt = negCnt = 0
         
@@ -101,13 +112,16 @@ def preprocessing(file, posDict, negDict):
                 if tokenDict.has_key(token):
                     tokenDict[token] = tokenDict[token] + 1
                 else:
-                    tokenDict[token] = 1              
+                    tokenDict[token] = 1            
         return negCnt, posCnt
 
 '''
 This is the implementation for the naive Bayes, we will implement the variant of the naive bayes later
 '''
 class BayesClassifier():    
+    def __init__(self, slangDict):
+        self.slangDict = slangDict
+        
     def __calculate(self, tokens, polarityDict):
         freqSum = len(tokens)
         prob = 0
@@ -138,22 +152,22 @@ class BayesClassifier():
     def classify(self):
         posDict = {}
         negDict = {}
-        negCnt, posCnt = preprocessing("dataset/trainingSample.csv", posDict, negDict)
+        negCnt, posCnt = preprocessing("dataset/trainingSample.csv", posDict, negDict, self.slangDict)
         preNegProb = math.log(float(negCnt) / (negCnt + posCnt))
         prePosProb = math.log(float(posCnt) / (negCnt + posCnt))
         correctCnt = totalCnt = 0
         
         #negDict = self.shrinkFeatures(negDict)
         #posDict = self.shrinkFeatures(posDict)
-        self.printDict(negDict)
-        self.printDict(posDict)
-        '''with open("dataset/testdata.csv", "r") as testFile:
+        #self.printDict(negDict)
+        #self.printDict(posDict)
+        with open("dataset/testdata.csv", "r") as testFile:
             reader = csv.reader(testFile)
             for tweet in reader:
                 if(int(tweet[0]) == 2): #we don't consider the neutral class current now
                     continue
                 totalCnt += 1   
-                tokens = processTweet(tweet[5])
+                tokens = processTweet(tweet[5], self.slangDict)
                 posProb = prePosProb + self.__calculate(tokens, posDict)
                 negProb = preNegProb + self.__calculate(tokens, negDict)
                 if posProb > negProb:
@@ -162,9 +176,10 @@ class BayesClassifier():
                     label = 0
                 if label == int(tweet[0]):
                     correctCnt += 1
+        print correctCnt
         print totalCnt
         accuracy = float(correctCnt) / totalCnt
-        print accuracy'''
+        print accuracy
                     
 
 def SVMClassifier():
@@ -241,7 +256,8 @@ application = tornado.web.Application(
                 ], **settings);
 
 if __name__ == "__main__":
-    bayesClassifier = BayesClassifier()
+    slangDict = loadSlangDict("dataset/SlangDict.txt")
+    bayesClassifier = BayesClassifier(slangDict)
     bayesClassifier.classify()
     #application.listen(8888)
     #tornado.ioloop.IOLoop.instance().start()
