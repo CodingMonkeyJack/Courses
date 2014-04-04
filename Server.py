@@ -58,17 +58,15 @@ Check Agarwaletal11 paper
 '''
 def processTweet(tweetText, slangDict):
     tweetText = re.sub(r"http\S*|@\S*", "", tweetText)   #delete the url and @name
-    flag = 0
     words = tweetText.split()
     for word in words:
         key = word.lower()
         if slangDict.has_key(key):
-            flag = 1
             #print "WORD:" + word
             tweetText = tweetText.replace(word, slangDict[key])
     sents = sent_tokenize(tweetText)
     lmtzr = nltk.stem.wordnet.WordNetLemmatizer()
-    tokens = []
+    posTokens = []
     
     '''if flag == 1:
         print "PRE:" + preText
@@ -83,13 +81,16 @@ def processTweet(tweetText, slangDict):
             if token not in stopwords.words("english") and string.punctuation.find(token) == -1 and containsAlpha(token) and len(token) > 1:
                 pos = getWordNetPos(taggedToken[1])
                 if pos is not None: 
-                    tokens.append(lmtzr.lemmatize(token, pos))
-    return tokens
+                    posTokens.append([lmtzr.lemmatize(token, pos), pos])
+    return posTokens
+
+class TokenMeta:
+    def __init__(self, pos, freq):
+        self.pos = pos
+        self.freq = freq
 
 '''
 We need to shrink the features
-TODO: 
-(1) Expand the word
 '''
 def preprocessing(file, posDict, negDict, slangDict):
     with open(file, "r") as trainingFile:
@@ -98,7 +99,7 @@ def preprocessing(file, posDict, negDict, slangDict):
         reader = csv.reader(trainingFile)
         for tweet in reader:
             tweetText = tweet[5]
-            tokens = processTweet(tweetText, slangDict)             
+            taggedTokens = processTweet(tweetText, slangDict)             
             polarityFlag = int(tweet[0])
             if polarityFlag == 0:   #negative
                 tokenDict = negDict
@@ -108,11 +109,12 @@ def preprocessing(file, posDict, negDict, slangDict):
                 posCnt += 1
             else:
                 continue
-            for token in tokens:
+            for taggedToken in taggedTokens:
+                token = taggedToken[0]
                 if tokenDict.has_key(token):
-                    tokenDict[token] = tokenDict[token] + 1
+                    tokenDict[token].freq = tokenDict[token].freq + 1
                 else:
-                    tokenDict[token] = 1            
+                    tokenDict[token] = TokenMeta(taggedToken[1], 1) 
         return negCnt, posCnt
 
 '''
@@ -122,31 +124,35 @@ class BayesClassifier():
     def __init__(self, slangDict):
         self.slangDict = slangDict
         
-    def __calculate(self, tokens, polarityDict):
-        freqSum = len(tokens)
+    def __calculate(self, taggedTokens, polarityDict):
+        freqSum = len(taggedTokens)
         prob = 0
         
-        for token in tokens:
-            if polarityDict.has_key(token):
-                freqSum += polarityDict[token]
+        for taggedToken in taggedTokens:
+            if polarityDict.has_key(taggedToken[0]):
+                freqSum += polarityDict[taggedToken[0]]
 
-        for token in tokens:
-            if polarityDict.has_key(token):
-                prob += math.log((polarityDict[token] + 1) * 1.0 / freqSum)
+        for taggedToken in taggedTokens:
+            if polarityDict.has_key(taggedToken[0]):
+                prob += math.log((polarityDict[taggedToken[0]] + 1) * 1.0 / freqSum) #if we add the frequency the accuracy will be much lower
             else:
                 prob += math.log(1.0 / freqSum)
         return prob
     
     def printDict(self, dict):
+        print len(dict)
         for key in dict.keys():
-            print key + " " + str(dict[key])
-        print "***************************8"
+            print key + " " + str(dict[key].pos) + " " + str(dict[key].freq)
+        print "****************************"
     
+    #If we use this method, we can increase the accuracy from 44.5% to 48.7%
     def shrinkFeatures(self, preDict):
         posDict = {}
         for key in preDict.keys():
-            if preDict[key] > 1:
-                posDict[key] = preDict[key]
+            if preDict[key].pos == "a" or preDict[key].pos == "r":
+                posDict[key] = preDict[key].freq
+            elif preDict[key].freq > 4:
+                posDict[key] = min(preDict[key].freq, 20)
         return posDict
     
     def classify(self):
@@ -157,10 +163,13 @@ class BayesClassifier():
         prePosProb = math.log(float(posCnt) / (negCnt + posCnt))
         correctCnt = totalCnt = 0
         
-        #negDict = self.shrinkFeatures(negDict)
-        #posDict = self.shrinkFeatures(posDict)
         #self.printDict(negDict)
         #self.printDict(posDict)
+        negDict = self.shrinkFeatures(negDict)
+        posDict = self.shrinkFeatures(posDict)
+        print negDict
+        print posDict 
+        
         with open("dataset/testdata.csv", "r") as testFile:
             reader = csv.reader(testFile)
             for tweet in reader:
