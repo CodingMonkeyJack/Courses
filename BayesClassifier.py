@@ -1,32 +1,11 @@
+import csv, math
+
+from utility import *
+
 class TokenMeta:
     def __init__(self, pos, freq):
         self.pos = pos              #pos tag
         self.freq = freq
-
-def preprocessing(file, posDict, negDict, slangDict):
-    with open(file, "r") as trainingFile:
-        posCnt = negCnt = 0
-        
-        reader = csv.reader(trainingFile)
-        for tweet in reader:
-            tweetText = tweet[5]
-            taggedTokens = processTweet(tweetText, slangDict)             
-            polarityFlag = int(tweet[0])
-            if polarityFlag == 0:   #negative
-                tokenDict = negDict
-                negCnt += 1
-            elif polarityFlag == 4: #positive
-                tokenDict = posDict
-                posCnt += 1
-            else:
-                continue
-            for taggedToken in taggedTokens:
-                token = taggedToken[0]
-                if tokenDict.has_key(token):
-                    tokenDict[token].freq = tokenDict[token].freq + 1
-                else:
-                    tokenDict[token] = TokenMeta(taggedToken[1], 1) 
-        return negCnt, posCnt
 
 '''
 This is the implementation for the naive Bayes, we will implement the variant of the naive bayes later
@@ -34,6 +13,31 @@ This is the implementation for the naive Bayes, we will implement the variant of
 class BayesClassifier():    
     def __init__(self, slangDict):
         self.slangDict = slangDict
+        
+    def __preprocessing(self, file, posDict, negDict, slangDict):
+        with open(file, "r") as trainingFile:
+            posCnt = negCnt = 0
+            
+            reader = csv.reader(trainingFile)
+            for tweet in reader:
+                tweetText = tweet[5]
+                taggedTokens = processTweet(tweetText, slangDict)             
+                polarityFlag = int(tweet[0])
+                if polarityFlag == 0:   #negative
+                    tokenDict = negDict
+                    negCnt += 1
+                elif polarityFlag == 4: #positive
+                    tokenDict = posDict
+                    posCnt += 1
+                else:
+                    continue
+                for taggedToken in taggedTokens:
+                    token = taggedToken[0]
+                    if tokenDict.has_key(token):
+                        tokenDict[token].freq = tokenDict[token].freq + 1
+                    else:
+                        tokenDict[token] = TokenMeta(taggedToken[1], 1) 
+            return negCnt, posCnt
         
     def __calculate(self, taggedTokens, polarityDict):
         freqSum = len(taggedTokens)
@@ -50,14 +54,14 @@ class BayesClassifier():
                 prob += math.log(1.0 / freqSum)
         return prob
     
-    def printDict(self, dict):
+    def __printDict(self, dict):
         print len(dict)
         for key in dict.keys():
             print key + " " + str(dict[key].pos) + " " + str(dict[key].freq)
         print "****************************"
     
     #If we use this method, we can increase the accuracy from 44.5% to 48.7%
-    def shrinkFeatures(self, preDict):
+    def __shrinkFeatures(self, preDict):
         posDict = {}
         for key in preDict.keys():
             if preDict[key].pos == "a" or preDict[key].pos == "r":
@@ -69,15 +73,15 @@ class BayesClassifier():
     def classify(self):
         posDict = {}
         negDict = {}
-        negCnt, posCnt = preprocessing("dataset/trainingSample.csv", posDict, negDict, self.slangDict)
+        negCnt, posCnt = self.__preprocessing("dataset/trainingSample.csv", posDict, negDict, self.slangDict)
         preNegProb = math.log(float(negCnt) / (negCnt + posCnt))
         prePosProb = math.log(float(posCnt) / (negCnt + posCnt))
         correctCnt = totalCnt = 0
         
-        self.printDict(negDict)
-        self.printDict(posDict)
-        negDict = self.shrinkFeatures(negDict)
-        posDict = self.shrinkFeatures(posDict)
+        #self.__printDict(negDict)
+        #self.__printDict(posDict)
+        negDict = self.__shrinkFeatures(negDict)
+        posDict = self.__shrinkFeatures(posDict)
         #print negDict
         #print posDict 
         
