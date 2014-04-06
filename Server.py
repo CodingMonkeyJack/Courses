@@ -4,10 +4,16 @@ Created on Mar 31, 2014
 @author: lilong
 '''
 import tornado.ioloop, tornado.web
-import os, json, csv, nltk, itertools, re, string, math
+import os, json, csv, nltk, itertools, re, string, math, sys
 from TwitterSearch import * 
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords, wordnet
+from collections import OrderedDict
+
+sys.path.append("libsvm-3.18/python")
+
+from svmutil import *
+
 
 def containsAlpha(token):
     for c in token: 
@@ -62,7 +68,6 @@ def processTweet(tweetText, slangDict):
     for word in words:
         key = word.lower()
         if slangDict.has_key(key):
-            #print "WORD:" + word
             tweetText = tweetText.replace(word, slangDict[key])
     sents = sent_tokenize(tweetText)
     lmtzr = nltk.stem.wordnet.WordNetLemmatizer()
@@ -84,115 +89,81 @@ def processTweet(tweetText, slangDict):
                     posTokens.append([lmtzr.lemmatize(token, pos), pos])
     return posTokens
 
-class TokenMeta:
-    def __init__(self, pos, freq):
-        self.pos = pos
-        self.freq = freq
 
-'''
-We need to shrink the features
-'''
-def preprocessing(file, posDict, negDict, slangDict):
-    with open(file, "r") as trainingFile:
-        posCnt = negCnt = 0
+class TokenMeta2:
+    def __init__(self, pos, freq, order):
+        self.pos = pos              #pos tag
+        self.freq = freq
+        self.order = order
         
+#Get the whole features
+def preprocessing2(file, tokenDict, tweetFeatureList, slangDict):
+    with open(file, "r") as trainingFile:
         reader = csv.reader(trainingFile)
+        keyOrder = 1
+        
+        svmInput = open("svminput", "w")
+        
         for tweet in reader:
+            featureList = {}
             tweetText = tweet[5]
             taggedTokens = processTweet(tweetText, slangDict)             
-            polarityFlag = int(tweet[0])
-            if polarityFlag == 0:   #negative
-                tokenDict = negDict
-                negCnt += 1
-            elif polarityFlag == 4: #positive
-                tokenDict = posDict
-                posCnt += 1
-            else:
-                continue
+            
             for taggedToken in taggedTokens:
                 token = taggedToken[0]
                 if tokenDict.has_key(token):
                     tokenDict[token].freq = tokenDict[token].freq + 1
                 else:
-                    tokenDict[token] = TokenMeta(taggedToken[1], 1) 
-        return negCnt, posCnt
+                    tokenDict[token] = TokenMeta2(taggedToken[1], 1, keyOrder)
+                    keyOrder += 1
+                key = tokenDict[token].order
+                if featureList.has_key(key):
+                    featureList[key] = featureList[key] + 1
+                else:
+                    featureList[key] = 1
+                
+            featureList = OrderedDict(sorted(featureList.items(), key = lambda t: t[0]))
+            polarityFlag = int(tweet[0])
+            input = ""
+            if polarityFlag == 0:   #negative
+                input += "-1\t"
+            elif polarityFlag == 4: #positive
+                input += "+1\t"
+            input += "\t".join("%s:%s" % (key,val) for (key,val) in featureList.items())
+            input += "\n"
+            svmInput.write(input)
+            tweetFeatureList.append(featureList)
+        svmInput.flush()
+        svmInput.close()
+                  
+class Preprocess():
+    def __init__(self):
+        print "init"
 
-'''
-This is the implementation for the naive Bayes, we will implement the variant of the naive bayes later
-'''
-class BayesClassifier():    
+class SVMClassifier():
     def __init__(self, slangDict):
         self.slangDict = slangDict
-        
-    def __calculate(self, taggedTokens, polarityDict):
-        freqSum = len(taggedTokens)
-        prob = 0
-        
-        for taggedToken in taggedTokens:
-            if polarityDict.has_key(taggedToken[0]):
-                freqSum += polarityDict[taggedToken[0]]
-
-        for taggedToken in taggedTokens:
-            if polarityDict.has_key(taggedToken[0]):
-                prob += math.log((polarityDict[taggedToken[0]] + 1) * 1.0 / freqSum) #if we add the frequency the accuracy will be much lower
-            else:
-                prob += math.log(1.0 / freqSum)
-        return prob
     
     def printDict(self, dict):
         print len(dict)
         for key in dict.keys():
-            print key + " " + str(dict[key].pos) + " " + str(dict[key].freq)
+            print key + " " + str(dict[key].pos) + " " + str(dict[key].freq) + " " + str(dict[key].order)
         print "****************************"
-    
-    #If we use this method, we can increase the accuracy from 44.5% to 48.7%
-    def shrinkFeatures(self, preDict):
-        posDict = {}
-        for key in preDict.keys():
-            if preDict[key].pos == "a" or preDict[key].pos == "r":
-                posDict[key] = preDict[key].freq
-            elif preDict[key].freq > 4:
-                posDict[key] = min(preDict[key].freq, 20)
-        return posDict
-    
-    def classify(self):
-        posDict = {}
-        negDict = {}
-        negCnt, posCnt = preprocessing("dataset/trainingSample.csv", posDict, negDict, self.slangDict)
-        preNegProb = math.log(float(negCnt) / (negCnt + posCnt))
-        prePosProb = math.log(float(posCnt) / (negCnt + posCnt))
-        correctCnt = totalCnt = 0
         
-        #self.printDict(negDict)
-        #self.printDict(posDict)
-        negDict = self.shrinkFeatures(negDict)
-        posDict = self.shrinkFeatures(posDict)
-        print negDict
-        print posDict 
+    def __getFeatures(self):
+        tokenDict = {}
+        tweetFeatureList = []
+        preprocessing2("dataset/trainingSample.csv", tokenDict, tweetFeatureList, self.slangDict)
+        tokenDict = OrderedDict(sorted(tokenDict.items(), key = lambda t: t[1].order))
+        #self.printDict(tokenDict)
+        print "#################################################"     
         
-        with open("dataset/testdata.csv", "r") as testFile:
-            reader = csv.reader(testFile)
-            for tweet in reader:
-                if(int(tweet[0]) == 2): #we don't consider the neutral class current now
-                    continue
-                totalCnt += 1   
-                tokens = processTweet(tweet[5], self.slangDict)
-                posProb = prePosProb + self.__calculate(tokens, posDict)
-                negProb = preNegProb + self.__calculate(tokens, negDict)
-                if posProb > negProb:
-                    label = 4
-                else:
-                    label = 0
-                if label == int(tweet[0]):
-                    correctCnt += 1
-        print correctCnt
-        print totalCnt
-        accuracy = float(correctCnt) / totalCnt
-        print accuracy
-                    
-
-def SVMClassifier():
-    print "SVM"
+    def train(self):
+        self.__getFeatures()
+        print "file done"
+        y, x = svm_read_problem("svminput")
+        m = svm_train(y, x, '-c 4')
+        svm_save_model("svminput", m)
 
 def encodeTweet(obj):
     if isinstance(obj, Tweet):
@@ -266,7 +237,7 @@ application = tornado.web.Application(
 
 if __name__ == "__main__":
     slangDict = loadSlangDict("dataset/SlangDict.txt")
-    bayesClassifier = BayesClassifier(slangDict)
-    bayesClassifier.classify()
+    svmClassifier = SVMClassifier(slangDict)
+    svmClassifier.train()
     #application.listen(8888)
     #tornado.ioloop.IOLoop.instance().start()
