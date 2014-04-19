@@ -60,12 +60,12 @@ class BayesClassifier():
             print key + " " + str(dict[key].pos) + " " + str(dict[key].freq)
         print "****************************"
     
-    #If we use this method, we can increase the accuracy from 44.5% to 48.7%
+    #If we use this method, we can increase the accuracy from 44.5% to 48.7% 
     def __shrinkFeatures(self, preDict):
         posDict = {}
         for key in preDict.keys():
             if preDict[key].pos == "a" or preDict[key].pos == "r":
-                posDict[key] = preDict[key].freq
+                posDict[key] = min(preDict[key].freq, 20)   #improve to 54%
             elif preDict[key].freq > 4:
                 posDict[key] = min(preDict[key].freq, 20)
         return posDict

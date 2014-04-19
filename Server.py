@@ -4,7 +4,7 @@ Created on Mar 31, 2014
 @author: lilong
 '''
 import tornado.ioloop, tornado.web
-import os, json, nltk, itertools, re, string, math, sys
+import os, json
 from TwitterSearch import * 
 
 def encodeTweet(obj):
@@ -77,8 +77,6 @@ application = tornado.web.Application(
                 (r"/jquery-1.11.0.min.js", tornado.web.StaticFileHandler, dict(path=settings["static_path"])),
                 ], **settings);
 
-if __name__ == "__main__":
-    slangDict = loadSlangDict("dataset/SlangDict.txt")
-    
-    #application.listen(8888)
-    #tornado.ioloop.IOLoop.instance().start()
+if __name__ == "__main__":    
+    application.listen(8888)
+    tornado.ioloop.IOLoop.instance().start()
