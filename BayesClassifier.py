@@ -11,17 +11,18 @@ class TokenMeta:
 This is the implementation for the naive Bayes, we will implement the variant of the naive bayes later
 '''
 class BayesClassifier():    
-    def __init__(self, slangDict):
+    def __init__(self, slangDict, emotionDict):
         self.slangDict = slangDict
+        self.emotionDict = emotionDict
         
-    def __preprocessing(self, file, posDict, negDict, slangDict):
+    def __preprocessing(self, file, posDict, negDict):
         with open(file, "r") as trainingFile:
             posCnt = negCnt = 0
             
             reader = csv.reader(trainingFile)
             for tweet in reader:
                 tweetText = tweet[5]
-                taggedTokens = processTweet(tweetText, slangDict)             
+                taggedTokens = processTweet(tweetText, self.slangDict, self.emotionDict)             
                 polarityFlag = int(tweet[0])
                 if polarityFlag == 0:   #negative
                     tokenDict = negDict
@@ -33,11 +34,23 @@ class BayesClassifier():
                     continue
                 for taggedToken in taggedTokens:
                     token = taggedToken[0]
+                    token, freq = self.__checkExPolarity(token)
+                    
                     if tokenDict.has_key(token):
-                        tokenDict[token].freq = tokenDict[token].freq + 1
+                        tokenDict[token].freq = tokenDict[token].freq + freq
                     else:
-                        tokenDict[token] = TokenMeta(taggedToken[1], 1) 
+                        tokenDict[token] = TokenMeta(taggedToken[1], freq) 
             return negCnt, posCnt
+    
+    def __checkExPolarity(self, word):
+        freq = 1
+        if word == "exhappy":
+            word = "happy"
+            freq = 2
+        elif word == "exsad":
+            word =  "sad"
+            freq = 2
+        return word, freq 
         
     def __calculate(self, taggedTokens, polarityDict):
         freqSum = len(taggedTokens)
@@ -73,7 +86,7 @@ class BayesClassifier():
     def classify(self):
         posDict = {}
         negDict = {}
-        negCnt, posCnt = self.__preprocessing("dataset/trainingSample.csv", posDict, negDict, self.slangDict)
+        negCnt, posCnt = self.__preprocessing("dataset/trainingSample.csv", posDict, negDict)
         preNegProb = math.log(float(negCnt) / (negCnt + posCnt))
         prePosProb = math.log(float(posCnt) / (negCnt + posCnt))
         correctCnt = totalCnt = 0
@@ -91,7 +104,7 @@ class BayesClassifier():
                 if(int(tweet[0]) == 2): #we don't consider the neutral class current now
                     continue
                 totalCnt += 1   
-                tokens = processTweet(tweet[5], self.slangDict)
+                tokens = processTweet(tweet[5], self.slangDict, self.emotionDict)
                 posProb = prePosProb + self.__calculate(tokens, posDict)
                 negProb = preNegProb + self.__calculate(tokens, negDict)
                 if posProb > negProb:
