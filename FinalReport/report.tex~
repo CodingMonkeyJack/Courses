@@ -1,0 +1,31 @@
+\documentclass{article}
+
+\begin{document}
+\title{Visual Tweets Sentimental Analysis}
+\author{Lilong Jiang (jiang.573)}
+\maketitle
+
+\section{Introduction}
+In this project, I build a visual online tweets sentimental analysis tool, which allows users to do the sentimental analysis for a certain topic. The user interface is shown in Figure 1. We implement two classifiers and compare the performance and accuracy in both classifiers. 
+\section{Dataset}
+We get our datset from the Sentiment140 \footnote{\texttt{\scriptsize{http://www.sentiment140.com/‎}}}. The training dataset in this dataset is collected by the Twitter API, whose content contains the emoticons. The test dataset in this dataset is manually annotated.
+\section{Preprocessing}
+There are several challenges for the tweets processing: firstly, the tweets are very short, limited as 140 characters. Secondly, the tweets are very sloppy and it contains a lot of misspellings, slangs, abbreviations and emoticons. The preprocessing step is very important for the later classification.
+We preprocess all the tweets as follows: \\
+(1) Remove usernames and urls. \\
+(2) I use an emoticon dictionary ~\cite{agarwal2011sentiment}, in which each emoticon is labeled as emotion(positive or negative). The emoticons in the tweets are replaced by happy or sad. \\
+(3) NLTL\footnote{\texttt{\scriptsize{http://www.nltk.org/‎‎}}} is used to tokenize the tweets, remove the stop words, punctuations, and lemmatization. \\
+(4) PyEnchant\footnote{\texttt{\scriptsize{http://pythonhosted.org/pyenchant/‎‎}}} is used to check whether the token is a correct English word. \\ 
+\section{Classifiers}
+We use two classifiers in this project. One is the naive Bayes classifier and the other is the SVM. 
+\subsection{Naive Bayes Classifier}
+\subsection{SVM Classifier}
+\subsection{Experiment}
+We compare these two classifier on the performance and accuracy. 2000 tweets are used to train the classifers (1000 tweets are positive and 1000 tweets are negative) and 359 tweets are used to test the classifier.
+\section{Online Sentimental Analysis}
+\subsection{Architecture}
+In the front end, we use d3\footnote{\texttt{\scriptsize{http://d3js.org/‎‎}}} to visualize the final result and Tornado\footnote{\texttt{\scriptsize{http://www.tornadoweb.org/}}} as a webserver.  
+\subsection{Data Collection}
+
+\subsection{Online Analysis}
+\end{document}

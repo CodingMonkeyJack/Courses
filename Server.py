@@ -4,7 +4,7 @@ Created on Mar 31, 2014
 @author: lilong
 '''
 import tornado.ioloop, tornado.web
-import os, json
+import os, json, time
 from TwitterSearch import * 
 
 def encodeTweet(obj):
@@ -14,10 +14,11 @@ def encodeTweet(obj):
 
 #Tweet Class
 class Tweet:
-    def __init__(self, tweetID, text, date):
-        self.id = tweetID
+    def __init__(self, name, text, date, polarity):
+        self.name = name
         self.text = text
         self.date = date
+        self.polarity = polarity
 
 #get sizeLimit tweets from the Twitter
 def getTweets(keyword):
@@ -37,13 +38,17 @@ def getTweets(keyword):
             consumer_secret = 'C0bEJVSBlM5MK3wtjUMdfNEW1N7WUivHkoWCI8icNA0',
             access_token = '803704459-RyWDnsKaMUYz3ciF6JgMAyViRCm5fKyULQxKLsRD',
             access_token_secret = 'z2XWKWkvjZTv7eDUqnKu53aDY6ZwAisQIIxOKxz42p0wi'
-         )
-
+        )
+        
+        polarity = 0
         for tweet in ts.searchTweetsIterable(tso): 
             tweetsSize = ts.getStatistics()["tweets"]
             curSize += tweetsSize 
-            tweetEntity = Tweet(tweet["id"], tweet["text"], tweet["created_at"])
+            tweetTime = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
+            tweetEntity = Tweet(tweet["user"]["screen_name"], tweet["text"], tweetTime, polarity)
             tweetList.append(tweetEntity)
+            
+            polarity = not(polarity)
             
             if curSize > sizeLimit:
                 break
