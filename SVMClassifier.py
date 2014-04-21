@@ -17,11 +17,12 @@ class TokenMeta:
         self.order = order
         
 class SVMClassifier():
-    def __init__(self, slangDict):
+    def __init__(self, slangDict, emotionDict):
         self.slangDict = slangDict
+        self.emotionDict = emotionDict
     
     #Get the whole features
-    def __preprocessing(self, input, output, tokenDict, tweetFeatureList, slangDict):
+    def __preprocessing(self, input, output, tokenDict, tweetFeatureList):
         with open(input, "r") as trainingFile:
             reader = csv.reader(trainingFile)
             keyOrder = 1
@@ -31,7 +32,7 @@ class SVMClassifier():
             for tweet in reader:
                 featureList = {}
                 tweetText = tweet[5]
-                taggedTokens = processTweet(tweetText, slangDict)             
+                taggedTokens = processTweet(tweetText, self.slangDict, self.emotionDict)             
                 
                 for taggedToken in taggedTokens:
                     token = taggedToken[0]
@@ -71,7 +72,7 @@ class SVMClassifier():
     def __getTrainFeatures(self, inputFile, outputFile):
         tokenDict = {}
         tweetFeatureList = []
-        self.__preprocessing(inputFile, outputFile, tokenDict, tweetFeatureList, self.slangDict)
+        self.__preprocessing(inputFile, outputFile, tokenDict, tweetFeatureList)
         self.tokenDict = tokenDict   
         
     def __getTestFeatures(self, inputFile, outputFile):
@@ -84,7 +85,7 @@ class SVMClassifier():
             for tweet in reader:
                 featureList = {}
                 tweetText = tweet[5]
-                taggedTokens = processTweet(tweetText, self.slangDict)             
+                taggedTokens = processTweet(tweetText, self.slangDict, self.emotionDict)             
                 
                 for taggedToken in taggedTokens:
                     token = taggedToken[0]

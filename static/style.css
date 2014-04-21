@@ -1,3 +1,21 @@
 table, th, tr, td{
 	border: 1px solid black;
 }
+
+div#statistics{
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+div#pieChart{
+	float: left;
+}
+div#barChart{
+	float: left;
+	height: 300px;
+	width: 300px;
+}
+
+.bar{
+	fill: steelblue;
+}
