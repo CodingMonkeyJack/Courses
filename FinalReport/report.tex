@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{graphicx}
 
 \begin{document}
 \title{Visual Tweets Sentimental Analysis}
@@ -14,7 +15,7 @@ There are several challenges for the tweets processing: firstly, the tweets are 
 We preprocess all the tweets as follows: \\
 (1) Remove usernames and urls. \\
 (2) I use an emoticon dictionary ~\cite{agarwal2011sentiment}, in which each emoticon is labeled as emotion(positive or negative). The emoticons in the tweets are replaced by happy or sad. \\
-(3) NLTL\footnote{\texttt{\scriptsize{http://www.nltk.org/‎‎}}} is used to tokenize the tweets, remove the stop words, punctuations, and lemmatization. \\
+(3) NLTK\footnote{\texttt{\scriptsize{http://www.nltk.org/‎‎}}} is used to tokenize the tweets, remove the stop words, punctuations, and lemmatization. \\
 (4) PyEnchant\footnote{\texttt{\scriptsize{http://pythonhosted.org/pyenchant/‎‎}}} is used to check whether the token is a correct English word. \\ 
 \section{Classifiers}
 We use two classifiers in this project. One is the naive Bayes classifier and the other is the SVM. 
@@ -24,7 +25,13 @@ We use two classifiers in this project. One is the naive Bayes classifier and th
 We compare these two classifier on the performance and accuracy. 2000 tweets are used to train the classifers (1000 tweets are positive and 1000 tweets are negative) and 359 tweets are used to test the classifier.
 \section{Online Sentimental Analysis}
 \subsection{Architecture}
-In the front end, we use d3\footnote{\texttt{\scriptsize{http://d3js.org/‎‎}}} to visualize the final result and Tornado\footnote{\texttt{\scriptsize{http://www.tornadoweb.org/}}} as a webserver. When users submit a topic, the server gets 1000 tweets from the tweeter and analyzes each tweet and returns the result to the client. 
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{pics/architecture}
+\caption{Architecture}
+\label{Fig:architecture}
+\end{figure}
+In the front end, we use d3\footnote{\texttt{\scriptsize{http://d3js.org/‎‎}}} to visualize the final result and Tornado\footnote{\texttt{\scriptsize{http://www.tornadoweb.org/}}} as a webserver. When users submit a topic, the server gets 1000 tweets from the twitter through twitter api and analyzes each tweet and returns the statistics information and tweets to the client. 
 \subsection{Data Collection}
 
 \subsection{Online Analysis}
