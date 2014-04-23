@@ -14,7 +14,7 @@ Check Agarwaletal11 paper
 (3) Delete URL and @name
 (4) Remove the stop words, punctuation, numbers
 '''
-def processTweet(tweetText, slangDict, emotionDict):
+def processTweet(tweetText, slangDict, emotionDict):    
     orgText = tweetText
     
     tweetText = re.sub(r"http\S*|@\S*", "", tweetText)   #delete the url and @name
@@ -138,7 +138,7 @@ def loadEmotionDict(file):
             polarity = words[wordLen - 1]
             for i in range(wordLen - 1):
                 emotionDict[words[i]] = polarity
-    #for key in emotionDict.keys():
-    #    print key + ":" + emotionDict[key]
+    '''for key in emotionDict.keys():
+        print key + ":" + emotionDict[key]'''
     return emotionDict
             
