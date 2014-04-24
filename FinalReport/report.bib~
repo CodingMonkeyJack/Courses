@@ -19,6 +19,6 @@
 @inproceedings{sentiment140,
   title={Twitter Sentiment Classification using Distant Supervision},
   author={Alec Go, Richa Bhayani, Lei Huang},
-  booktitle={Techinical Report},
+  booktitle={Technical Report},
   organization={Stanford}
 }
