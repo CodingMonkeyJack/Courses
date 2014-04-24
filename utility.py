@@ -19,14 +19,9 @@ def processTweet(tweetText, slangDict, emotionDict):
     
     tweetText = re.sub(r"http\S*|@\S*", "", tweetText)   #delete the url and @name
     
-    flag = 0
     for key in emotionDict.keys():
         if tweetText.find(key) != -1:
-            flag = 1
             tweetText = tweetText.replace(key, "." + emotionDict[key] + ".")
-    if flag == 1:
-        print "PRE:" + orgText
-        print "POS:" + tweetText
     
     words = tweetText.split()
     #expand the abbr.
@@ -46,9 +41,6 @@ def processTweet(tweetText, slangDict, emotionDict):
         sentTokens = word_tokenize(sent)
         taggedTokens = nltk.pos_tag(sentTokens)
         
-        if flag == 1:
-            print taggedTokens
-        
         for taggedToken in taggedTokens:
             token = trimWord(convertWord(taggedToken[0].lower()))
             if token not in stopwords.words("english") and string.punctuation.find(token) == -1 and len(token) > 1:
@@ -57,8 +49,6 @@ def processTweet(tweetText, slangDict, emotionDict):
                     token = lmtzr.lemmatize(token, pos)
                     if(enchantDict.check(token)) or (token == "exsad") or (token == "exhappy"):
                         posTokens.append([token, pos])
-    if flag == 1:
-        print posTokens
     return posTokens 
 
 #map the pos tag in treebank to the pos tag in wordnet, only verb, adjective, adverb, noun are left

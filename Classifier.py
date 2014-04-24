@@ -11,9 +11,9 @@ if __name__ == '__main__':
     slangDict = loadSlangDict("dataset/slangDict.txt")       #we still need to check the slang dict later
     emotionDict = loadEmotionDict("dataset/emotionDict.txt")
         
-    svmClassifier = SVMClassifier(slangDict, emotionDict)
-    svmClassifier.train()
-    svmClassifier.test()
+    #svmClassifier = SVMClassifier(slangDict, emotionDict)
+    #svmClassifier.train()
+    #svmClassifier.test()
     
-    #bayesClassifier = BayesClassifier(slangDict, emotionDict)
-    #bayesClassifier.classify()
+    bayesClassifier = BayesClassifier(slangDict, emotionDict)
+    bayesClassifier.classify()
