@@ -22,6 +22,8 @@ class BayesClassifier():
         self.emotionDict = emotionDict
         self.negTweetList = []
         self.posTweetList = []
+        self.negDict = {}
+        self.posDict = {}
         
     def __preprocessing(self, file, posDict, negDict):
         with open(file, "r") as trainingFile:
@@ -85,14 +87,15 @@ class BayesClassifier():
             print key + " " + str(dict[key].pos) + " " + str(dict[key].freq) + " " + str(dict[key].MIScore)
         print "****************************"
     
-    #If we use this method, we can increase the accuracy from 44.5% to 48.7% 
     def __shrinkFeaturesWithFreq(self, preDict):
         posDict = {}
         for key in preDict.keys():
             if preDict[key].pos == "a" or preDict[key].pos == "r":
-                posDict[key] = min(preDict[key].freq, 20)   #improve to 54%
+                #posDict[key] = min(preDict[key].freq, 20)   #improve to 54%
+                posDict[key] = min(preDict[key].freq, 1)   #improve to 54%
             elif preDict[key].freq > 4:
-                posDict[key] = min(preDict[key].freq, 20)
+                #posDict[key] = min(preDict[key].freq, 20)
+                posDict[key] = min(preDict[key].freq, 1)
         return posDict
     
     def __shrinkFeaturesWithMI(self, wordDict, label):
@@ -139,7 +142,7 @@ class BayesClassifier():
                 break
         return newWordDict        
     
-    def classify(self):
+    def train(self):
         posDict = {}
         negDict = {}
         negCnt, posCnt = self.__preprocessing("dataset/trainingSample.csv", posDict, negDict)
@@ -149,13 +152,23 @@ class BayesClassifier():
         
         #self.__printDict(negDict)
         #self.__printDict(posDict)
-        #negDict = self.__shrinkFeaturesWithFreq(negDict)
-        #posDict = self.__shrinkFeaturesWithFreq(posDict)
-        negDict = self.__shrinkFeaturesWithMI(negDict, 0)
-        posDict = self.__shrinkFeaturesWithMI(posDict, 4)
-        #print negDict
-        #print posDict 
-        
+        self.negDict = self.__shrinkFeaturesWithFreq(negDict)
+        self.posDict = self.__shrinkFeaturesWithFreq(posDict)
+        #negDict = self.__shrinkFeaturesWithMI(negDict, 0)
+        #posDict = self.__shrinkFeaturesWithMI(posDict, 4)
+        print "Training is done."
+    
+    def classifyTweet(self, tweet):
+        tokens = processTweet(tweet, self.slangDict, self.emotionDict)
+        posProb = self.__calculate(tokens, self.posDict)
+        negProb = self.__calculate(tokens, self.negDict)
+        if posProb > negProb:
+            label = 4
+        else:
+            label = 0
+        return label
+    
+    def classify(self):
         with open("dataset/testdata.csv", "r") as testFile:
             reader = csv.reader(testFile)
             for tweet in reader:
@@ -163,8 +176,8 @@ class BayesClassifier():
                     continue
                 totalCnt += 1   
                 tokens = processTweet(tweet[5], self.slangDict, self.emotionDict)
-                posProb = prePosProb + self.__calculate(tokens, posDict)
-                negProb = preNegProb + self.__calculate(tokens, negDict)
+                posProb = prePosProb + self.__calculate(tokens, self.posDict)
+                negProb = preNegProb + self.__calculate(tokens, self.negDict)
                 if posProb > negProb:
                     label = 4
                 else:

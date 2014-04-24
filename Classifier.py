@@ -16,4 +16,5 @@ if __name__ == '__main__':
     #svmClassifier.test()
     
     bayesClassifier = BayesClassifier(slangDict, emotionDict)
+    bayesClassifier.train()
     bayesClassifier.classify()

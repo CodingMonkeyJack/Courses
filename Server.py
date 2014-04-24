@@ -6,6 +6,8 @@ Created on Mar 31, 2014
 import tornado.ioloop, tornado.web
 import os, json, time
 from TwitterSearch import * 
+from BayesClassifier import BayesClassifier
+from utility import *
 
 def encodeTweet(obj):
     if isinstance(obj, Tweet):
@@ -22,7 +24,7 @@ class Tweet:
 
 #get sizeLimit tweets from the Twitter
 def getTweets(keyword):
-    sizeLimit = 200
+    sizeLimit = 1000
     curSize = 0
     tweetList = []
     
@@ -40,11 +42,12 @@ def getTweets(keyword):
             access_token_secret = 'z2XWKWkvjZTv7eDUqnKu53aDY6ZwAisQIIxOKxz42p0wi'
         )
         
-        polarity = 0
         for tweet in ts.searchTweetsIterable(tso): 
             tweetsSize = ts.getStatistics()["tweets"]
             curSize += tweetsSize 
             tweetTime = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
+            polarity = bayesClassifier.classifyTweet(tweet["text"])
+            
             tweetEntity = Tweet(tweet["user"]["screen_name"], tweet["text"], tweetTime, polarity)
             tweetList.append(tweetEntity)
             
@@ -83,5 +86,10 @@ application = tornado.web.Application(
                 ], **settings);
 
 if __name__ == "__main__":    
+    slangDict = loadSlangDict("dataset/slangDict.txt")       #we still need to check the slang dict later
+    emotionDict = loadEmotionDict("dataset/emotionDict.txt")
+    bayesClassifier = BayesClassifier(slangDict, emotionDict)
+    bayesClassifier.train()
+    
     application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()

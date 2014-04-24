@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{graphicx}
+\usepackage{cite}
 
 \begin{document}
 \title{Visual Tweets Sentimental Analysis}
@@ -7,7 +8,7 @@
 \maketitle
 
 \section{Introduction}
-In this project, I build a visual online tweets sentimental analysis tool, which allows users to do the sentimental analysis for a certain topic. The user interface is shown in Figure 1. We implement two classifiers and compare the performance and accuracy in both classifiers. 
+In this project, I build a visual online tweets sentimental analysis tool, which allows users to do the sentimental analysis for a certain topic. The user interface is shown in Figure 1. I also implement two classifiers and compare the performance and accuracy in both classifiers. 
 \section{Dataset}
 We get our datset from the Sentiment140 \footnote{\texttt{\scriptsize{http://www.sentiment140.com/‎}}}. The training dataset in this dataset is collected by the Twitter API, whose content contains the emoticons. The test dataset in this dataset is manually annotated.
 \section{Preprocessing}
@@ -49,7 +50,7 @@ We plot the accuracy of Bayes classifier with the changing of the shrinking rati
 \subsection{Architecture}
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{pics/architecture}
+\includegraphics[width=0.8\textwidth]{pics/architecture.pdf}
 \caption{Architecture}
 \label{Fig:architecture}
 \end{figure}
@@ -57,4 +58,8 @@ In the front end, we use d3\footnote{\texttt{\scriptsize{http://d3js.org/‎‎}
 \subsection{Data Collection}
 TwitterSearch\footnote{\texttt{\scriptsize{http://twittersearch.readthedocs.org/en/latest//‎‎}}} is a python-based interface which implements the Twitter Search API. 
 \subsection{Online Analysis}
+\cite{agarwal2011sentiment}
+
+\bibliography{report}
+\bibliographystyle{plain}
 \end{document}

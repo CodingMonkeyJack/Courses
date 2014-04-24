@@ -16,8 +16,8 @@ $(document).ready(function(){
 			var $date = $("<td></td>");
 			$date.text(tweet["date"]);
 			
-			//var $polarity = $("<td></td>");
-			//$polarity.text(tweet["polarity"]);
+			var $polarity = $("<td></td>");
+			$polarity.text(tweet["polarity"]);
 			
 			$row.append($id);
 			$row.append($text);
@@ -26,17 +26,15 @@ $(document).ready(function(){
 		});
 	}
 	
-	showStat(null);
-	
 	function showStat(tweets){
 		var negCnt = 0, posCnt = 0;
-		/*tweets.forEach(function(tweet){
+		tweets.forEach(function(tweet){
 			if(parseInt(tweet["polarity"]) == 0){
 				negCnt++;
 			}else{
 				posCnt++;
 			}
-		});*/
+		});
 		negCnt = 100;
 		posCnt = 50;
 		
