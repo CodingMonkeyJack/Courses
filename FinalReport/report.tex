@@ -15,7 +15,7 @@ We get our datset from the Sentiment140\footnote{\texttt{\scriptsize{http://www.
 There are several challenges for the tweets processing: firstly, the tweets are very short, limited as 140 characters. Secondly, the tweets are very sloppy and it contains a lot of misspellings, slangs, abbreviations, emoticons, urls, etc. So the preprocessing step is very important for the later classification.
 We preprocess all the tweets as follows: \\
 (1) Remove usernames and urls. \\
-(2) I use an emoticon dictionary ~\cite{agarwal2011sentiment}, in which each emoticon is labeled as emotion(positive or negative). The emoticons in the tweets are replaced by happy or sad. \\
+(2) I use an emoticon dictionary, in which each emoticon is labeled as emotion(positive or negative). The emoticons in the tweets are replaced by happy or sad. \\
 (3) Replace all sequences of repeated characters by three characters, for example, convert goooood to goood.\\
 (4) Expand abbreviations with a dictionary\footnote{\texttt{\scriptsize{http://www.noslang.com/‎‎}}}. For example, lol is converted into laughing out loud. \\
 (5) NLTK\footnote{\texttt{\scriptsize{http://www.nltk.org/‎‎}}} is used to tokenize the tweet, remove the stop words, punctuations, and do the lemmatization. \\
