@@ -8,22 +8,23 @@
 \maketitle
 
 \section{Introduction}
-In this project, I build a visual online tweets sentimental analysis tool, which allows users to do the sentimental analysis for a certain topic. I also implement two classifiers and compare both classifiers over the performance and accuracy. 
+In this project, I build a visual online tweets sentimental analysis tool, which allows users to do the sentimental analysis for a certain topic. I also implement two classifiers and compare both classifiers on accuracy. 
 \section{Dataset}
-We get our datset from the Sentiment140\footnote{\texttt{\scriptsize{http://www.sentiment140.com/‎}}}. The training dataset in this dataset is collected by the Twitter API, whose content contains the emoticons :) and :(. The test dataset in this dataset is manually annotated.
+We get our dataset from the Sentiment140\footnote{\texttt{\scriptsize{http://www.sentiment140.com/‎}}}. The training dataset in this dataset is collected by Twitter API. The tweets whose content contain the emoticons :) and :( are collected. The test dataset in this dataset is manually annotated.
 \section{Preprocessing}
 There are several challenges for the tweets processing: firstly, the tweets are very short, limited as 140 characters. Secondly, the tweets are very sloppy and it contains a lot of misspellings, slangs, abbreviations, emoticons, urls, etc. So the preprocessing step is very important for the later classification.
 We preprocess all the tweets as follows: \\
 (1) Remove usernames and urls. \\
 (2) I use an emoticon dictionary, in which each emoticon is labeled as emotion(positive or negative). The emoticons in the tweets are replaced by happy or sad. \\
 (3) Replace all sequences of repeated characters by three characters, for example, convert goooood to goood.\\
-(4) Expand abbreviations with a dictionary\footnote{\texttt{\scriptsize{http://www.noslang.com/‎‎}}}. For example, lol is converted into laughing out loud. \\
+(4) Expand abbreviations with a dictionary\footnote{\texttt{\scriptsize{http://www.noslang.com/‎‎}}}. For example, \emph{lol} is converted into laughing out loud. \\
 (5) NLTK\footnote{\texttt{\scriptsize{http://www.nltk.org/‎‎}}} is used to tokenize the tweet, remove the stop words, punctuations, and do the lemmatization. \\
 (6) PyEnchant\footnote{\texttt{\scriptsize{http://pythonhosted.org/pyenchant/‎‎}}} is used to check whether the token is a correct English word. Only correct English words are retained.\\ 
+(7) Replace all the negations (e.g. not, no, never, cannot, etc.) by \emph{never}.
 \section{Classifiers}
 Two classifiers are implemented in this project. One is the naive Bayes classifier and the other is the SVM. 
 \subsection{Naive Bayes Classifier}
-The Naive Bayes classifier is a simple probalistic classifier which is based on Bayes theorem. Each tweet will be classified into the class with the highest posterior probability.
+The Naive Bayes classifier is a simple probalistic classifier which is based on Bayes theorem. Each tweet will be classified into the class with the highest posterior probability. In order to avoid the underflow, I use the log likelihood.
 
 \begin{center}
 $C_{map} = argmax_{c \in C} (log P(c) + \sum_{1 \le k \le n_d} log P(t_k |c))$ 
@@ -48,21 +49,35 @@ Mutual Information is used to measure how much a term t contributes to the class
 $I(U; C) = \frac{N_{11}}{N} \log_2 \frac{N N_{11}}{N_{1.}N_{.1}} + \frac{N_{01}}{N} \log_2 \frac{N N_{01}}{N_{0.}N_{.1}} + \frac{N_{10}}{N} \log_2 \frac{N N_{10}}{N_{1.}N_{.0}} + \frac{N_{00}}{N}\log_2 \frac{N N_{00}}{N_{0.}N_{.0}}$
 \end{center}
 
-\noindent where $N_{10}$ is the number of documents that contain t and are not in class c. $N_{11}$ is the number of documents that contain t and are in class c. $N_{01}$ is the number of documents that don't contain t and are in class c. $N_{00}$ is the number of documents that don't contain t and are not in class c. $N_{1.}$ is the number of documents that contain t. $N_{0.}$ is the number of documents that don't contain t. $N_{.0}$ is the number of documents which are not in class c. $N_{.1}$ is the number of documents in class c.\\
-We use add-1 smoothing for each count to void the divided by 0.
+\noindent where $N_{10}$ is the number of documents that contain t and are not in class c. $N_{11}$ is the number of documents that contain t and are in class c. $N_{01}$ is the number of documents that don't contain t and are in class c. $N_{00}$ is the number of documents that don't contain t and are not in class c. $N_{1.}$ is the number of documents that contain t. $N_{0.}$ is the number of documents that don't contain t. $N_{.0}$ is the number of documents which are not in class c. $N_{.1}$ is the number of documents in class c. The top k feature with high I(U; C) value will be selected.\\
+Add-1 smoothing is used for each count to avoid the divided by 0.
 \subsection{SVM Classifier}
-Libsvm\footnote{\texttt{\scriptsize{http://www.csie.ntu.edu.tw/~cjlin/libsvm/‎‎}}} is a library which implemented SVM algorithm. Libsvm is used to classify the tweets. ‎I use C-SVM and set the parameter of the cost to 4.
+Libsvm\footnote{\texttt{\scriptsize{http://www.csie.ntu.edu.tw/~cjlin/libsvm/‎‎}}} is a library which implemented SVM algorithm. Libsvm is used to classify the tweets. ‎I use C-SVM and set the parameter of the cost to 4. In the SVM classifier, only the unigram feature is used.
 \subsection{Experiment}
-I compare these two classifier on the performance and accuracy. 359 tweets are used to test the classifier.
-\subsubsection{Parameter Sensitivity}
-Shrinking Size \\
-I plot the accuracy of Bayes classifier with the changing of the shrinking ratio in the mutual information. The result is shown in Figure. As we can see 
-\subsubsection{Performance}
+I compare these two classifier on the performance and accuracy. 359 tweets are used to test the classifier. In the training dataset, half are positve tweets and half are negative tweets. If the data size is 1000, it means the data set contains 1000 positive tweets and 1000 negative tweets. 
+\subsubsection{Preprocessing}
+There are a lot processing in this project. In this experiment, three processing steps are checked to see whether they are helpful to increase the accuracy. Remove pyenchant means the incorrect words will be left. Remove Expanding Abbr means the abbrivations are not expanded. Remove Replacing Emoticon means the emoticons are not replaced with the relevant words. The result is shown in Figure ~\ref{Fig:preprocessing}. As we can see, when the data size is large, some processing steps can't increase the accuracy or even hurt the accuracy. However, when the data size is small, it can help to increase the accuracy. The reason behind this is that when the data size is large, the noisy words have little effect on the accuracy since it can be reduced in the feature selection step.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{pics/ParameterSentivity.pdf}
+\caption{Effect of preprocessing on accuracy}
+\label{Fig:preprocessing}
+\end{figure}
 \subsubsection{Accuracy}
+I compare the accuracy of three different classifiers on different data size, which is shown in Figure ~\ref{Fig:accuracy}.  As we can see, with the increase of data size, the accuracy is increased. And in most cases, the binarized multinomial naive bayes model performs the best and the multinomial naive bayes model presents more variability. This makes sense, since in the sentiment analysis task, where it does not really matter how many times someone mentions the word but rather only the fact that he does. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{pics/Accuracy.pdf}
+\caption{Accuracy with the data size between different classifiers}
+\label{Fig:accuracy}
+\end{figure}
+
 \section{Online Sentimental Analysis}
 \subsection{Architecture}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth]{pics/architecture.pdf}
 \caption{Architecture}
@@ -79,9 +94,12 @@ In the front end, D3\footnote{\texttt{\scriptsize{http://d3js.org/‎‎}}} is u
 \end{figure}
 
 \subsection{Data Collection}
-TwitterSearch\footnote{\texttt{\scriptsize{http://twittersearch.readthedocs.org/en/latest/‎‎}}} is a python-based interface which implements the Twitter Search API. 
+TwitterSearch\footnote{\texttt{\scriptsize{http://twittersearch.readthedocs.org/en/latest/‎‎}}} is a python-based interface which implements the Twitter Search API. I use it to collect the relevant tweets.
 \subsection{Online Analysis}
 We analyzes each tweet using the naive bayes classifier and show the final statistics information in the pie chart and bar chart. The tweets will be shown in the table, where the negative tweet will shown in light gray while the positive tweet will be shown in light blue.
+
+\section{Future Work}
+I don't try changing the parameters of SVM to see how the accuracy will be affected. Also the mutual information selection method is needed to compare with the feature-based selection method.
 
 \begin{thebibliography}{9}
 \bibitem{sentiment140}
