@@ -1,3 +1,9 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{crotty2015vizdom}
+Andrew Crotty, Alex Galakatos, Emanuel Zgraggen, Carsten Binnig, and Tim
+  Kraska.
+\newblock Vizdom: interactive analytics through pen and touch.
+\newblock {\em Proceedings of the VLDB Endowment}, 8(12):2024--2027, 2015.
 
 \end{thebibliography}

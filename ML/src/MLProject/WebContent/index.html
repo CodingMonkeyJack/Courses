@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Interactive Machine Learning Interface</title>
+<link rel="stylesheet" href="static/style.css">
+<script src="lib/jquery-2.1.4.min.js"></script>
+<script src='static/main.js'></script>
+</head>
+<body>
+<div id='header'>
+	<div id='data' style="float: left; width: 500px;">
+		<label>Please choose a datasource:</label>
+		<select>
+		  <option value="volvo">Volvo</option>
+		  <option value="saab">Saab</option>
+		  <option value="opel">Opel</option>
+		  <option value="audi">Audi</option>
+		</select>
+		<button id='import' type='button'>Import</button>
+	</div>
+	<div id='ml' style="float: left; width: 400px;">
+		<label>KMeans</label>
+		<label>KNN</label>
+		<label>SVM</label>
+		<label>Regression</label>
+	</div>
+	<br style="clear: left;" />
+</div>
+<div id='params' style="float: left; width: 500px;">Parameters</div>
+<div id='space' style="float: left; width: 500px;">Space</div>
+</body>
+</html>
