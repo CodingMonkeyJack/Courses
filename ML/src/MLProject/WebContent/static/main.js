@@ -14,7 +14,7 @@ var getParamControl = function(param, val) {
 		controlHolder.append(valControl);
 		paramHolder.append(controlHolder);
 	}
-} 
+}
 
 $(window).load(function() {
 	$('.method').click(function(){
@@ -28,4 +28,7 @@ $(window).load(function() {
 			}
 		});
 	});
+	// kmeansClustering();
+	var exampleData = [{'x': 1, 'y': 2}, {'x': 3, 'y': 1}, {'x': 10, 'y': 11}];
+	plotScatterplot(exampleData);
 });
