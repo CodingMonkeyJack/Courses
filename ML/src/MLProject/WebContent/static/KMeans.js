@@ -45,11 +45,11 @@ function loadKMeansControls() {
 		var offY = e.pageY - parentOffset.top;
 		
 		d3.select('#spacesvg').append("circle")
-	    .attr("class", "dot")
+	    .attr("class", "initcenter")
 	    .attr("r", 5)
 	    .attr("cx", offX)
 	    .attr("cy", offY)
-	    .style("fill", 'red');
+	    .style({'fill': 'red', 'opacity': 0.6});
 		
 		var centerX = x.invert(offX - margin.left), centerY = y.invert(offY - margin.top);
 		initCenters.push([centerX, centerY]);
