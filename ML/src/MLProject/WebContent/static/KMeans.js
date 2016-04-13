@@ -14,15 +14,24 @@ function loadKMeansControls() {
 	var initCentersRandomLabel = $("<label></label>").text('Random');
 	var initCentersSelectRadio = $("<input type='radio' name='initcenters' value='select'/>");
 	var initCentersSelectLabel = $("<label></label>").text('Select');
+	var clusterButton = $("<button id='cluster'>cluster</button>");
+	
 	initCentersHolderControl.append(initCentersRandomRadio);
 	initCentersHolderControl.append(initCentersRandomLabel);
 	initCentersHolderControl.append(initCentersSelectRadio);
 	initCentersHolderControl.append(initCentersSelectLabel);
+	initCentersHolderControl.append(clusterButton);
 	
 	controlHolder.append(initCentersHolderControl);
 	controlHolder.append(increaseKControl);
 	controlHolder.append(decreaseKControl);
 	paramHolder.append(controlHolder);
+	
+	clusterButton.click(function(e) {
+		numClusters = initCenters.length;
+		console.log('clusters:' + numClusters);
+		kmeansClustering(numClusters);
+	});
 	
 	$("input[name='initcenters']").change(function() {
 		var value = $(this).val();
@@ -47,15 +56,15 @@ function loadKMeansControls() {
 	});
 	
 	increaseKControl.click(function() {
-		console.log('incrK');
+		// console.log('incrK');
 		numClusters += 1;
-		kmeansClustering(numClusters, null);
+		kmeansClustering(numClusters);
 	});
 	
 	decreaseKControl.click(function() {
-		console.log('decrK');
+		// console.log('decrK');
 		numClusters -= 1;
-		kmeansClustering(numClusters, null);
+		kmeansClustering(numClusters);
 	});
 }
 
@@ -75,10 +84,10 @@ function colorPoints(centroids, clusters) {
     });
 }
 
-function kmeansClustering(k, centroids) {
+function kmeansClustering(k) {
 	var km = new kMeans({
 		K: k,
-		initCentroids: centroids
+		initCentroids: initCenters
 	});
 
 	var normData = data.map(function(d) { return [d.x, d.y];});
