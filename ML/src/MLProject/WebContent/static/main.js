@@ -24,15 +24,13 @@ function initDatasetlist() {
 }
 
 function plotScatterplot(data) {
-	var spaceWidth = 500, spaceHeight = 500;
-	var margin = {top: 20, right: 20, bottom: 30, left: 40},
-	width = spaceWidth - margin.left - margin.right,
+	var width = spaceWidth - margin.left - margin.right,
 	height = spaceHeight - margin.top - margin.bottom;
 
-	var x = d3.scale.linear()
+	x = d3.scale.linear()
 	.range([0, width]);
 
-	var y = d3.scale.linear()
+	y = d3.scale.linear()
 	.range([height, 0]);
 
 	var color = d3.scale.category10();

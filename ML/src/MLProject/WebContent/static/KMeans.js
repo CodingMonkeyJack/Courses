@@ -30,12 +30,21 @@ function loadKMeansControls() {
 		else initCenters = [];
 	});
 	
-	$("#space").click(function() {
+	$("#space").click(function(e) {
+		var parentOffset = $('#spacesvg').offset();
+		var offX = e.pageX - parentOffset.left;
+		var offY = e.pageY - parentOffset.top;
 		
+		d3.select('#spacesvg').append("circle")
+	    .attr("class", "dot")
+	    .attr("r", 5)
+	    .attr("cx", offX)
+	    .attr("cy", offY)
+	    .style("fill", 'red');
+		
+		var centerX = x.invert(offX - margin.left), centerY = y.invert(offY - margin.top);
+		initCenters.push([centerX, centerY]);
 	});
-	
-	var svg = d3.select("#spaceg").append("circle")
-	
 	
 	increaseKControl.click(function() {
 		console.log('incrK');
