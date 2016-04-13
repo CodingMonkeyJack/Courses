@@ -1,3 +1,27 @@
+function loadKMeansControls() {
+	var paramHolder = $("div#params");
+	paramHolder.children().remove();
+	var controlHolder = $("<div></div>");
+	var increaseKControl = $("<button id='incrK'>increase k</button>");
+	var decreaseKControl = $("<button id='decrK'>decrease k</button>");
+	
+	controlHolder.append(increaseKControl);
+	controlHolder.append(decreaseKControl);
+	paramHolder.append(controlHolder);
+	
+	increaseKControl.click(function() {
+		console.log('incrK');
+		numClusters += 1;
+		kmeansClustering(numClusters, null);
+	});
+	
+	decreaseKControl.click(function() {
+		console.log('decrK');
+		numClusters -= 1;
+		kmeansClustering(numClusters, null);
+	});
+}
+
 function colorPoints(centroids, clusters) {
 	var numClusters = centroids.length;
 	var color = d3.scale.category10();
@@ -27,13 +51,13 @@ function kmeansClustering(k, centroids) {
 		km.findClosestCentroids();
 		km.moveCentroids();
 
-		console.log(km.centroids);
+		// console.log(km.centroids);
 
 		if(km.hasConverged()) break;
 	}
 	
-	console.log('Finished in:', km.currentIteration, ' iterations');
-	console.log(km.centroids, km.clusters);
+	// console.log('Finished in:', km.currentIteration, ' iterations');
+	// console.log(km.centroids, km.clusters);
 	
 	colorPoints(km.centroids, km.clusters);
 }

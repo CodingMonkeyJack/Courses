@@ -1,28 +1,11 @@
-var getParamControl = function(param, val) {
-	var paramHolder = $("div#params");
-	paramHolder.children().remove();
-	if($.isArray(val)) {
-		
-	} else {
-		var controlHolder = $("<div></div>");
-		var labelControl = $("<label>" + param + "</label>");
-		var valControl = $('<input>').attr({
-			type: 'text',
-		    text: val
-		});
-		controlHolder.append(labelControl);
-		controlHolder.append(valControl);
-		paramHolder.append(controlHolder);
-	}
-}
-
 function bindImportEvent() {
 	$('#import').click(function() {
 		var datasetName = $("#dataselect").val();
 		$.get("/loadData", {'datasetName': datasetName}, function(dataStr) {
 			data = JSON.parse(dataStr);
 			plotScatterplot(data);
-			kmeansClustering(2, null);
+			numClusters = 2;
+			kmeansClustering(numClusters, null);
 		});
 	});
 }
@@ -112,20 +95,15 @@ function plotScatterplot(data) {
     .style("fill", function(d) { return color('random'); });
 }
 
+function bindMethodEvent() {
+	$('.method').click(function(){
+		var method = $(this).text().trim();
+		if(method == 'KMeans') loadKMeansControls();
+	});
+}
+
 $(window).load(function() {
 	initDatasetlist();
 	bindImportEvent();
-	
-	
-	/* $('.method').click(function(){
-		var method = $(this).text().trim();
-		$.get("/params", {method: method}, function(paramStr) {
-			var paramObj = JSON.parse(paramStr);
-			var params = Object.keys(paramObj);
-			for(var param in params) {
-				var val = paramObj[param];
-				var control = getParamControl(param, val);
-			}
-		});
-	});*/
+	bindMethodEvent();
 });
