@@ -19,7 +19,6 @@ class DataHandler(tornado.web.RequestHandler):
         with open(datasetFilePath, 'r') as datasetFile:
             self.write(datasetFile.read())
         
-
 class ParamsHandler(tornado.web.RequestHandler):
     def get(self):
         method = self.get_argument("method")

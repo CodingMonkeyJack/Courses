@@ -1,3 +1,7 @@
+/*
+ * 1. high-dimensional dataset
+ * 2. cluster partial dataset
+ * */
 function loadKMeansControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
@@ -5,9 +9,33 @@ function loadKMeansControls() {
 	var increaseKControl = $("<button id='incrK'>increase k</button>");
 	var decreaseKControl = $("<button id='decrK'>decrease k</button>");
 	
+	var initCentersHolderControl = $("<div></div>");
+	var initCentersRandomRadio = $("<input type='radio' name='initcenters' value='random'/>");
+	var initCentersRandomLabel = $("<label></label>").text('Random');
+	var initCentersSelectRadio = $("<input type='radio' name='initcenters' value='select'/>");
+	var initCentersSelectLabel = $("<label></label>").text('Select');
+	initCentersHolderControl.append(initCentersRandomRadio);
+	initCentersHolderControl.append(initCentersRandomLabel);
+	initCentersHolderControl.append(initCentersSelectRadio);
+	initCentersHolderControl.append(initCentersSelectLabel);
+	
+	controlHolder.append(initCentersHolderControl);
 	controlHolder.append(increaseKControl);
 	controlHolder.append(decreaseKControl);
 	paramHolder.append(controlHolder);
+	
+	$("input[name='initcenters']").change(function() {
+		var value = $(this).val();
+		if(value == 'random') initCenters = null;
+		else initCenters = [];
+	});
+	
+	$("#space").click(function() {
+		
+	});
+	
+	var svg = d3.select("#spaceg").append("circle")
+	
 	
 	increaseKControl.click(function() {
 		console.log('incrK');
