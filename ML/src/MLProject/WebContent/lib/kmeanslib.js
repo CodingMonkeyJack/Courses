@@ -13,6 +13,7 @@ kMeans = (function() {
     this.tolerance = (_ref3 = options.tolerance) != null ? _ref3 : 1e-9;
     this.initialize = (_ref4 = options.initialize) != null ? _ref4 : kMeans.initializeForgy;
     this.initCentroids = (_ref5 = options.initCentroids) != null ? _ref5: null;
+    console.log(this.initCentroids);
   }
 
   kMeans.prototype.cluster = function(X) {
