@@ -16,8 +16,35 @@ var getParamControl = function(param, val) {
 	}
 }
 
+function bindImportEvent() {
+	$('#import').click(function() {
+		var datasetName = $("#dataselect").val();
+		// console.log(datasetName);
+		$.get("/loadData", {'datasetName': datasetName}, function(dataStr) {
+			// console.log(dataStr);
+			data = JSON.parse(dataStr);
+			console.log(data);
+		});
+	});
+}
+
+function initDatasetlist() {
+	$.get("/datalist", function(dataListStr) {
+		var dataList = JSON.parse(dataListStr);
+		var datanamesList = dataList.map(function(item) { return item['dataset'];});
+		$.each(datanamesList, function(i, value) { 
+			$('#dataselect').append(
+					$("<option></option>")
+					.attr("value", value)
+					.text(value)); 
+		});
+	});
+}
+
 $(window).load(function() {
-	$('.method').click(function(){
+	initDatasetlist();
+	bindImportEvent();
+	/* $('.method').click(function(){
 		var method = $(this).text().trim();
 		$.get("/params", {method: method}, function(paramStr) {
 			var paramObj = JSON.parse(paramStr);
@@ -27,8 +54,8 @@ $(window).load(function() {
 				var control = getParamControl(param, val);
 			}
 		});
-	});
+	});*/
 	// kmeansClustering();
-	var exampleData = [{'x': 1, 'y': 2}, {'x': 3, 'y': 1}, {'x': 10, 'y': 11}];
-	plotScatterplot(exampleData);
+	// var exampleData = [{'x': 1, 'y': 2}, {'x': 3, 'y': 1}, {'x': 10, 'y': 11}];
+	// plotScatterplot(exampleData);
 });

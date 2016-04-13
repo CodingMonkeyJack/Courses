@@ -21,9 +21,10 @@ function kmeansClustering() {
 }
 
 function plotScatterplot(data) {
+	var spaceWidth = 500, spaceHeight = 500;
 	var margin = {top: 20, right: 20, bottom: 30, left: 40},
-	width = 960 - margin.left - margin.right,
-	height = 500 - margin.top - margin.bottom;
+	width = spaceWidth - margin.left - margin.right,
+	height = spaceHeight - margin.top - margin.bottom;
 
 	var x = d3.scale.linear()
 	.range([0, width]);
@@ -65,7 +66,7 @@ function plotScatterplot(data) {
 	.attr("x", width)
 	.attr("y", -6)
 	.style("text-anchor", "end")
-	.text("Sepal Width (cm)");
+	.text("X");
 
 	svg.append("g")
 	.attr("class", "y axis")
@@ -76,7 +77,7 @@ function plotScatterplot(data) {
 	.attr("y", 6)
 	.attr("dy", ".71em")
 	.style("text-anchor", "end")
-	.text("Sepal Length (cm)")
+	.text("Y")
 	
 	svg.selectAll(".dot")
     .data(data)
