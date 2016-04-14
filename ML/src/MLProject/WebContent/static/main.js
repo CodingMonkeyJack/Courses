@@ -4,8 +4,6 @@ function bindImportEvent() {
 		$.get("/loadData", {'datasetName': datasetName}, function(dataStr) {
 			data = JSON.parse(dataStr);
 			plotScatterplot(data);
-			numClusters = 2;
-			kmeansClustering(numClusters, null);
 		});
 	});
 }
@@ -97,6 +95,7 @@ function bindMethodEvent() {
 	$('.method').click(function(){
 		var method = $(this).text().trim();
 		if(method == 'KMeans') loadKMeansControls();
+		else if(method == 'Regression') loadRegressionControls();
 	});
 }
 

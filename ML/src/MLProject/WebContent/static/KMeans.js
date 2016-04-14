@@ -1,6 +1,7 @@
 /*
  * 1. high-dimensional dataset
  * 2. cluster partial dataset
+ * 3. add point operation
  * */
 function loadKMeansControls() {
 	var paramHolder = $("div#params");
@@ -39,6 +40,7 @@ function loadKMeansControls() {
 		else initCenters = [];
 	});
 	
+	// select centers
 	$("#space").click(function(e) {
 		var parentOffset = $('#spacesvg').offset();
 		var offX = e.pageX - parentOffset.left;

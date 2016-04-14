@@ -1,3 +1,4 @@
 [
-	{"dataset": "dataset1", "dimensions": []}
+	{"dataset": "dataset1", "dimensions": [], "description": "kmeans 2d dataset"},
+	{"dataset": "dataset2", "dimensions": [], "description": "linear regression 2d dataset"}
 ]

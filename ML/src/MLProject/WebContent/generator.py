@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 import simplejson as json
 
 def genKMeansData():
@@ -22,10 +23,30 @@ def genKMeansData():
         point['x'] = x
         point['y'] = y
         points.append(point)
+    
     with open('data/dataset1.json', 'w') as dataFile:
         json.dump(points, dataFile)
     #plt.plot(x2, y2, 'o')
     #plt.show()
-    
+
+def genLinearRegressionData():
+    def fun(x):
+        return 5 * x + 6;
+    noiseScale = 30
+    xs = np.random.random_sample(100) * 10
+    ys = [fun(x) + random.random() * noiseScale for x in xs]
+    points = []
+    for x, y in zip(xs, ys):
+        point = {}
+        point['x'] = x
+        point['y'] = y
+        points.append(point)
+    print (points)
+    with open('data/dataset2.json', 'w') as dataFile:
+        json.dump(points, dataFile)
+    #plt.plot(xs, ys, 'o') 
+    #plt.show()
+
 if __name__ == '__main__':
-    genKMeansData()
+    #genKMeansData()
+    genLinearRegressionData()
