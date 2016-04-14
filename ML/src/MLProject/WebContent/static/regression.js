@@ -2,6 +2,7 @@
 /*
  * TODO: calculate residuals
  * */
+
 function loadRegressionControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
@@ -23,6 +24,15 @@ function loadRegressionControls() {
 	});
 }
 
+function drawCircle(svg, posX, posY) {
+	svg.append("circle")
+    .attr("class", "regpoint")
+    .attr("r", 5)
+    .attr("cx", posX)
+    .attr("cy", posY)
+    .style({'fill': 'red', 'opacity': 0.6});
+}
+
 function regressionFit() {
 	var normData = data.map(function(d) { return [d.x, d.y];});
 	var normXs = data.map(function(d) { return d.x;});
@@ -39,19 +49,8 @@ function regressionFit() {
 	
 	var svg = d3.select('#spacesvg');
 	
-	svg.append("circle")
-    .attr("class", "regpoint")
-    .attr("r", 5)
-    .attr("cx", startPosX)
-    .attr("cy", startPosY)
-    .style({'fill': 'red', 'opacity': 0.6});
-	
-	svg.append("circle")
-    .attr("class", "regpoint")
-    .attr("r", 5)
-    .attr("cx", endPosX)
-    .attr("cy", endPosY)
-    .style({'fill': 'red', 'opacity': 0.6});
+	drawCircle(svg, startPosX, startPosY);
+	drawCircle(svg, endPosX, endPosY);
 	
 	svg.append("line")
 	.attr("id", "regline")
@@ -63,16 +62,33 @@ function regressionFit() {
 	.attr("stroke-width", 5);
 	
 	$('#regline')
-	  .draggable();
-	  .bind('mousedown', function(event, ui){
-	    // bring target to front
-		  console.log('mouse down');
-		  $(event.target.parentElement).append( event.target );
+	  .draggable()
+	  .bind('mousedown', function(event, ui) {
+		  var x1StartX = d3.select(this).attr('x1'),
+		  	  y1StartY = d3.select(this).attr('y1'),
+		  	  x2StartX = d3.select(this).attr('x2'),
+		  	  y2StartY = d3.select(this).attr('y2');
+		  
+		  d3.select(this)
+		  .attr('mouseStartX', event.pageX)
+		  .attr('mouseStartY', event.pageY)
+		  .attr('x1StartX', x1StartX)
+		  .attr('y1StartY', y1StartY)
+		  .attr('x2StartX', x2StartX)
+		  .attr('y2StartY', y2StartY);
+		  $(event.target.parentElement).append(event.target);
 	  })
 	  .bind('drag', function(event, ui){
-	    // update coordinates manually, since top/left style props don't work on SVG
-		  console.log('drag');
-		  event.target.setAttribute('x', ui.position.left);
-		  event.target.setAttribute('y', ui.position.top);
+		  var diffX = event.pageX - parseFloat(d3.select(this).attr('mouseStartX')),
+		  	  diffY = event.pageY - parseFloat(d3.select(this).attr('mouseStartY'));
+		  var newX1 = parseFloat(d3.select(this).attr('x1StartX')) + diffX,
+		  	  newX2 = parseFloat(d3.select(this).attr('x2StartX')) + diffX,
+		  	  newY1 = parseFloat(d3.select(this).attr('y1StartY')) + diffY,
+		  	  newY2 = parseFloat(d3.select(this).attr('y2StartY')) + diffY;
+
+		  d3.select(this).attr('x1', newX1);
+		  d3.select(this).attr('x2', newX2);
+		  d3.select(this).attr('y1', newY1);
+		  d3.select(this).attr('y2', newY2);
 	  });
 }
