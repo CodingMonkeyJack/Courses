@@ -1,6 +1,7 @@
 // demo: http://www.shodor.org/interactivate/activities/Regression/
 /*
- * TODO: calculate residuals
+ * TODO: 
+ * 1. calculate residuals
  * */
 var m, b, newB;
 var startX, endX;
@@ -33,53 +34,72 @@ function loadRegressionControls() {
 function drawCircle(svg, posX, posY) {
 	svg.append("circle")
     .attr("class", "regpoint")
-    .attr("r", 5)
+    .attr("r", 7)
     .attr("cx", posX)
     .attr("cy", posY)
     .style({'fill': 'red', 'opacity': 0.6});
+}
+
+function drawLine(svg, startX, startY, endX, endY) {
+	svg.append("line")
+	.attr("id", "regline")
+	.attr("x1", startX)
+	.attr("y1", startY)
+	.attr("x2", endX)
+	.attr("y2", endY) //stroke="gray" ="5"  
+	.attr("stroke", "gray")
+	.attr("stroke-width", 5);
 }
 
 function getFunExpression(m, b) {
 	return "Y = " + m + " * X + " + b;
 }
 
-function regressionFit() {
-	var normData = data.map(function(d) { return [d.x, d.y];});
-	var normXs = data.map(function(d) { return d.x;});
-	
-	startX = math.min(normXs);
-	endX = math.max(normXs);
-	
-	var result = regression('linear', normData);
-	m = result['equation'][0];
-	b = result['equation'][1];
-	newB = b;
-	var startY = m * startX + b, endY = m * endX + b;
-//	console.log('m:' + m + ' b:' + b);
-//	console.log(startX + ' ' + endX);
-//	console.log(startY + ' ' + endY);
-	var startPosX = x(startX) + margin.left, startPosY = y(startY) + margin.top,
-		endPosX = x(endX) + margin.left, endPosY = y(endY) + margin.top;
-	
-	var svg = d3.select('#spacesvg');
-	
-	drawCircle(svg, startPosX, startPosY);
-	drawCircle(svg, endPosX, endPosY);
-	
-	svg.append("line")
-	.attr("id", "regline")
-	.attr("x1", startPosX)
-	.attr("y1", startPosY)
-	.attr("x2", endPosX)
-	.attr("y2", endPosY) //stroke="gray" ="5"  
-	.attr("stroke", "gray")
-	.attr("stroke-width", 5);
-	
-	var funStr = getFunExpression(m, b);
-	$('#funLabel').text(funStr);
-	
-	console.log(y.range() + ' ' + y.domain());
-	
+function bindEndPointsEvent() {
+	$('.regpoint')
+	.draggable()
+	.bind('mousedown', function(event, ui) {
+		event.stopPropagation();
+		
+		var startX = d3.select(this).attr('cx'),
+		startY = d3.select(this).attr('cy');
+		var regLine = d3.select('#regline');
+		var x1 = regLine.attr('x1'), y1 = regLine.attr('y1');
+		var position = 'start';
+		if(startX == x1 && startY == y1) position = 'start';
+		else position = 'end';
+
+		d3.select(this)
+		.attr('position', position)
+		.attr('mouseStartX', event.pageX)
+		.attr('mouseStartY', event.pageY)
+		.attr('startX', startX)
+		.attr('startY', startY);
+		$(event.target.parentElement).append(event.target);
+		
+	})
+	.bind('drag', function(event, ui){
+		event.stopPropagation();
+		
+		var diffX = event.pageX - parseFloat(d3.select(this).attr('mouseStartX')),
+		diffY = event.pageY - parseFloat(d3.select(this).attr('mouseStartY'));
+		var newX = parseFloat(d3.select(this).attr('startX')) + diffX,
+		newY = parseFloat(d3.select(this).attr('startY')) + diffY;
+
+		d3.select(this).attr('cx', newX);
+		d3.select(this).attr('cy', newY);
+		
+		if(d3.select(this).attr('position') == 'start') {
+			d3.select('#regline').attr('x1', newX);
+			d3.select('#regline').attr('y1', newY);
+		} else {
+			d3.select('#regline').attr('x2', newX);
+			d3.select('#regline').attr('y2', newY);
+		}
+	});
+}
+
+function bindLineEvent() {
 	$('#regline')
 	  .draggable()
 	  .bind('mousedown', function(event, ui) {
@@ -116,7 +136,44 @@ function regressionFit() {
 		  $('#funLabel').text(funStr);
 		  // console.log('startY:' + (m * startX + newB) + ' endY:' + (m * endX + newB));
 		  d3.select(this).attr('newB', newB);
+		  $('.regpoint').remove();
+		  
+		  var svg = d3.select('#spacesvg');			// todo: change position instead of removal
+		  drawCircle(svg, newX1, newY1);
+		  drawCircle(svg, newX2, newY2);
+		  bindEndPointsEvent();
 	  }).bind('mouseup', function(event, ui) {
 		  b = newB;
 	  });
+}
+
+function regressionFit() {
+	var normData = data.map(function(d) { return [d.x, d.y];});
+	var normXs = data.map(function(d) { return d.x;});
+	
+	startX = math.min(normXs);
+	endX = math.max(normXs);
+	
+	var result = regression('linear', normData);
+	m = result['equation'][0];
+	b = result['equation'][1];
+	newB = b;
+	var startY = m * startX + b, endY = m * endX + b;
+//	console.log('m:' + m + ' b:' + b);
+//	console.log(startX + ' ' + endX);
+//	console.log(startY + ' ' + endY);
+	var startPosX = x(startX) + margin.left, startPosY = y(startY) + margin.top,
+		endPosX = x(endX) + margin.left, endPosY = y(endY) + margin.top;
+	
+	var svg = d3.select('#spacesvg');
+	
+	drawCircle(svg, startPosX, startPosY);
+	drawCircle(svg, endPosX, endPosY);
+	drawLine(svg, startPosX, startPosY, endPosX, endPosY);
+	
+	var funStr = getFunExpression(m, b);
+	$('#funLabel').text(funStr);
+	
+	bindLineEvent();
+	bindEndPointsEvent();
 }
