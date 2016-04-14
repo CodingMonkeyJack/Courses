@@ -89,13 +89,33 @@ function bindEndPointsEvent() {
 		d3.select(this).attr('cx', newX);
 		d3.select(this).attr('cy', newY);
 		
+		var regLine = d3.select('#regline');
+		var newValX1, newValY1, newValX2, newValY2;
+		console.log(d3.select(this).attr('position'));
 		if(d3.select(this).attr('position') == 'start') {
-			d3.select('#regline').attr('x1', newX);
-			d3.select('#regline').attr('y1', newY);
+			regLine.attr('x1', newX);
+			regLine.attr('y1', newY);
+			
+			newValX1 = x.invert(newX - margin.left);
+			newValY1 = y.invert(newY - margin.top);
+			newValX2 = x.invert(parseFloat(regLine.attr('x2')) - margin.left);
+			newValY2 = y.invert(parseFloat(regLine.attr('y2')) - margin.top);
 		} else {
-			d3.select('#regline').attr('x2', newX);
-			d3.select('#regline').attr('y2', newY);
+			regLine.attr('x2', newX);
+			regLine.attr('y2', newY);
+			
+			newValX1 = x.invert(parseFloat(regLine.attr('x1')) - margin.left);
+			newValY1 = y.invert(parseFloat(regLine.attr('y1')) - margin.top);
+			newValX2 = x.invert(newX - margin.left);
+			newValY2 = y.invert(newY - margin.top);
 		}
+		
+		console.log(newValX1 + " " + newValY1 + "," + newValX2 + " " + newValY2);
+		
+		m = (newValY1 - newValY2) / (newValX1 - newValX2);
+		b = newValY1 - m * newValX1;
+		var funStr = getFunExpression(m, b);
+		$('#funLabel').text(funStr);
 	});
 }
 
