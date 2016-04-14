@@ -2,11 +2,12 @@
 /*
  * TODO: calculate residuals
  * */
+var m, b, newB;
+var startX, endX;
 
 function loadRegressionControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
-	var controlHolder = $("<div></div>");
 	
 	var regTypeHolder = $("<div></div>");
 	var linearRadio = $("<input type='radio' name='regtypes' value='linear'/>");
@@ -15,13 +16,18 @@ function loadRegressionControls() {
 	regTypeHolder.append(linearRadio);
 	regTypeHolder.append(linearLabel);
 	regTypeHolder.append(runButton);
-	controlHolder.append(regTypeHolder);
-	paramHolder.append(controlHolder);
-	
+	paramHolder.append(regTypeHolder);
 	runButton.click(function() {
 		// var value = $("input[name='regtypes']").val();
 		regressionFit();
 	});
+	
+	var statusHolder = $("<div></div>");
+	var funLabel = $("<label>Function:<label>"),
+		realFunLabel = $("<label id='funLabel'></label>");
+	statusHolder.append(funLabel);
+	statusHolder.append(realFunLabel);
+	paramHolder.append(statusHolder);
 }
 
 function drawCircle(svg, posX, posY) {
@@ -33,13 +39,21 @@ function drawCircle(svg, posX, posY) {
     .style({'fill': 'red', 'opacity': 0.6});
 }
 
+function getFunExpression(m, b) {
+	return "Y = " + m + " * X + " + b;
+}
+
 function regressionFit() {
 	var normData = data.map(function(d) { return [d.x, d.y];});
 	var normXs = data.map(function(d) { return d.x;});
-	var startX = math.min(normXs), endX = math.max(normXs);
+	
+	startX = math.min(normXs);
+	endX = math.max(normXs);
 	
 	var result = regression('linear', normData);
-	var m = result['equation'][0], b = result['equation'][1];
+	m = result['equation'][0];
+	b = result['equation'][1];
+	newB = b;
 	var startY = m * startX + b, endY = m * endX + b;
 //	console.log('m:' + m + ' b:' + b);
 //	console.log(startX + ' ' + endX);
@@ -60,6 +74,11 @@ function regressionFit() {
 	.attr("y2", endPosY) //stroke="gray" ="5"  
 	.attr("stroke", "gray")
 	.attr("stroke-width", 5);
+	
+	var funStr = getFunExpression(m, b);
+	$('#funLabel').text(funStr);
+	
+	console.log(y.range() + ' ' + y.domain());
 	
 	$('#regline')
 	  .draggable()
@@ -90,5 +109,14 @@ function regressionFit() {
 		  d3.select(this).attr('x2', newX2);
 		  d3.select(this).attr('y1', newY1);
 		  d3.select(this).attr('y2', newY2);
+		  
+		  var valDiffY = -(y.domain()[1] - y.domain()[0]) * 1.0 / (y.range()[0] - y.range()[1]) * diffY;
+		  newB = b + valDiffY;
+		  var funStr = getFunExpression(m, newB);
+		  $('#funLabel').text(funStr);
+		  // console.log('startY:' + (m * startX + newB) + ' endY:' + (m * endX + newB));
+		  d3.select(this).attr('newB', newB);
+	  }).bind('mouseup', function(event, ui) {
+		  b = newB;
 	  });
 }
