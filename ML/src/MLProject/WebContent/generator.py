@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import csv
 import simplejson as json
 
 def genKMeansData():
@@ -41,12 +42,32 @@ def genLinearRegressionData():
         point['x'] = x
         point['y'] = y
         points.append(point)
-    print (points)
+    # print (points)
     with open('data/dataset2.json', 'w') as dataFile:
         json.dump(points, dataFile)
     #plt.plot(xs, ys, 'o') 
     #plt.show()
+    
+def csvToJson():
+    points = []
+    with open('data/dataset3.csv', 'r') as inputFile:
+        inputReader = csv.reader(inputFile)
+        for row in inputReader:
+            point = {}
+            point['pregnant_times'] = row[0]
+            point['glucose_concentration'] = row[1]
+            point['blood_pressure'] = row[2]
+            point['skin_fold_thickness'] = row[3]
+            point['serum_insulin'] = row[4]
+            point['body_mass_index'] = row[5]
+            point['diabetes_pedigree'] = row[6]
+            point['age'] = row[7]
+            point['class'] = row[8]
+            points.append(point)
+    with open('data/dataset3.json', 'w') as dataFile:
+        json.dump(points, dataFile)
 
 if __name__ == '__main__':
     #genKMeansData()
-    genLinearRegressionData()
+    #genLinearRegressionData()
+    csvToJson()

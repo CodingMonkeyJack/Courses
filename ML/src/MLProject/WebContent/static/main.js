@@ -1,11 +1,16 @@
 function bindImportEvent() {
 	$('#import').click(function() {
+		var method = $(this).text().trim();
 		var datasetName = $("#dataselect").val();
 		$.get("/loadData", {'datasetName': datasetName}, function(dataStr) {
 			data = JSON.parse(dataStr);
-			
-			plotScatterplot(data);
 		});
+	});
+}
+
+function binPlotEvent() {
+	$('#plot').click(function() {
+		plotScatterplot(data);
 	});
 }
 
@@ -125,4 +130,5 @@ $(window).load(function() {
 	initDatasetlist();
 	bindImportEvent();
 	bindMethodEvent();
+	binPlotEvent();
 });

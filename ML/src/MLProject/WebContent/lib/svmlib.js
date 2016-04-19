@@ -1,5 +1,6 @@
 // MIT License
 // Andrej Karpathy
+// https://github.com/karpathy/svmjs
 
 var svmjs = (function(exports){
 
