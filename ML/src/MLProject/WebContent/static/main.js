@@ -117,12 +117,21 @@ function bindDataChangeEvent() {
 		var attrGroup = $('div#attrgroup');
 		attrGroup.children().remove();
 		
+		// show data attributes
 		for(var i = 0; i < datasetAttrs.length; ++i) {
-			var attrLabel = $('<label></label>')
+			var attrLabel = $('<div></div>')
 							.attr('class', 'attr')
 							.text(datasetAttrs[i]);
 			attrGroup.append(attrLabel);
 		}
+		$('div.attr').draggable({
+			helper : 'clone',
+			stop: function(event, ui) {
+				if($(this).overlaps('div#space')) {
+					$('div#spaceAttrs').append($(this));
+				}
+			}
+		});
 	});
 }
 

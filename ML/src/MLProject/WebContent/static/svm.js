@@ -28,10 +28,21 @@ function loadSVMControls() {
 	$("#classify").click(function() {
 		svmClassify();
 	});
+	
+	var spaceDiv = $('div#space');
+	spaceDiv.height(500);
+	var spaceAttrHolder = $("<div id='spaceAttrs'></div>");
+	spaceDiv.append(spaceAttrHolder);
+}
+
+function crossValid(holdPercent) {
+	var testSize = Math.floor(data.length * crossValidHoldPercent);
+	var testIdxs = math.randomInt([1, testSize], data.length);
 }
 
 function svmClassify() {
-	var crossValidHoldPercent = $('#crossValidInput').val(),
+	var crossValidHoldPercent = parseFloat($('#crossValidInput').val()),
 		kernel = $("input[name='kernel']:checked").val();
-	console.log(crossValidHoldPercent + ' ' + kernel);
+	
+	console.log(testIdxs);
 }
