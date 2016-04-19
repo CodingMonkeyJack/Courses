@@ -1,10 +1,10 @@
 // demo: http://www.shodor.org/interactivate/activities/Regression/
 /*
  * TODO: 
- * 1. calculate residuals
  * */
 var m, b, newB;
 var startX, endX;
+var normData; 	// [[x, y]]
 
 function loadRegressionControls() {
 	var paramHolder = $("div#params");
@@ -25,9 +25,14 @@ function loadRegressionControls() {
 	
 	var statusHolder = $("<div></div>");
 	var funLabel = $("<label>Function:<label>"),
-		realFunLabel = $("<label id='funLabel'></label>");
+		realFunLabel = $("<label id='funLabel'></label><br/>");
+	var squareLossLabel = $("<label>Square Loss:<label>");
+	var squareLossValLabel = $("<label id='squareLoss'>Square Loss:<label>");
+	
 	statusHolder.append(funLabel);
 	statusHolder.append(realFunLabel);
+	statusHolder.append(squareLossLabel);
+	statusHolder.append(squareLossValLabel);
 	paramHolder.append(statusHolder);
 }
 
@@ -51,8 +56,17 @@ function drawLine(svg, startX, startY, endX, endY) {
 	.attr("stroke-width", 5);
 }
 
-function getFunExpression(m, b) {
-	return "Y = " + m + " * X + " + b;
+function updateStatus(m, b) {
+	var funStr = "Y = " + m + " * X + " + b;
+	$('#funLabel').text(funStr);
+	
+	var loss = 0;
+	for(var i = 0; i < normData.length; ++i) {
+		var pointX = normData[i][0], pointY = normData[i][1];
+		var diff = m * pointX + b;
+		loss += diff * diff;
+	}
+	$('#squareLoss').text(loss);
 }
 
 function bindEndPointsEvent() {
@@ -114,8 +128,8 @@ function bindEndPointsEvent() {
 		
 		m = (newValY1 - newValY2) / (newValX1 - newValX2);
 		b = newValY1 - m * newValX1;
-		var funStr = getFunExpression(m, b);
-		$('#funLabel').text(funStr);
+
+		updateStatus(m, b);
 	});
 }
 
@@ -152,8 +166,9 @@ function bindLineEvent() {
 		  
 		  var valDiffY = -(y.domain()[1] - y.domain()[0]) * 1.0 / (y.range()[0] - y.range()[1]) * diffY;
 		  newB = b + valDiffY;
-		  var funStr = getFunExpression(m, newB);
-		  $('#funLabel').text(funStr);
+		  
+		  updateStatus(m, newB);
+		  
 		  // console.log('startY:' + (m * startX + newB) + ' endY:' + (m * endX + newB));
 		  d3.select(this).attr('newB', newB);
 		  $('.regpoint').remove();
@@ -168,7 +183,7 @@ function bindLineEvent() {
 }
 
 function regressionFit() {
-	var normData = data.map(function(d) { return [d.x, d.y];});
+	normData = data.map(function(d) { return [d.x, d.y];});
 	var normXs = data.map(function(d) { return d.x;});
 	
 	startX = math.min(normXs);
@@ -191,8 +206,7 @@ function regressionFit() {
 	drawCircle(svg, endPosX, endPosY);
 	drawLine(svg, startPosX, startPosY, endPosX, endPosY);
 	
-	var funStr = getFunExpression(m, b);
-	$('#funLabel').text(funStr);
+	updateStatus(m, b);
 	
 	bindLineEvent();
 	bindEndPointsEvent();
