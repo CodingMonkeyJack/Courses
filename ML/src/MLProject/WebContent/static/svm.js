@@ -31,8 +31,10 @@ function loadSVMControls() {
 	
 	var spaceDiv = $('div#space');
 	spaceDiv.height(500);
-	var spaceAttrHolder = $("<div id='spaceAttrs'></div>");
+	var spaceAttrHolder = $("<div id='spaceAttrs'></div>"),
+		resultHolder = $("<div id='spaceResult'></div>");
 	spaceDiv.append(spaceAttrHolder);
+	spaceDiv.append(resultHolder);
 }
 
 function crossValid(holdPercent) {
@@ -41,8 +43,12 @@ function crossValid(holdPercent) {
 }
 
 function svmClassify() {
-	var crossValidHoldPercent = parseFloat($('#crossValidInput').val()),
-		kernel = $("input[name='kernel']:checked").val();
-	
-	console.log(testIdxs);
+	//var crossValidHoldPercent = parseFloat($('#crossValidInput').val()),
+	//	kernel = $("input[name='kernel']:checked").val();
+	var attrDivList = $('div#spaceAttrs').children();
+	var attrs = [];
+	attrDivList.each(function() {
+		attrs.push($(this).text());
+	});
+	console.log(attrs);
 }
