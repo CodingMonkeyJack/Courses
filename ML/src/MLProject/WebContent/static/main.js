@@ -3,6 +3,7 @@ function bindImportEvent() {
 		var datasetName = $("#dataselect").val();
 		$.get("/loadData", {'datasetName': datasetName}, function(dataStr) {
 			data = JSON.parse(dataStr);
+			
 			plotScatterplot(data);
 		});
 	});
@@ -10,14 +11,17 @@ function bindImportEvent() {
 
 function initDatasetlist() {
 	$.get("/datalist", function(dataListStr) {
-		var dataList = JSON.parse(dataListStr);
+		dataList = JSON.parse(dataListStr);
 		var datanamesList = dataList.map(function(item) { return item['dataset'];});
+		
 		$.each(datanamesList, function(i, value) { 
 			$('#dataselect').append(
 					$("<option></option>")
 					.attr("value", value)
+					.attr("idx", i)
 					.text(value)); 
 		});
+		bindDataChangeEvent();
 	});
 }
 
@@ -53,7 +57,6 @@ function plotScatterplot(data) {
 	    d.x = +d.x;
 	    d.y = +d.y;
 	});
-
 
 	x.domain(d3.extent(data, function(d) { return d.x; })).nice();
 	y.domain(d3.extent(data, function(d) { return d.y; })).nice();
@@ -96,6 +99,25 @@ function bindMethodEvent() {
 		var method = $(this).text().trim();
 		if(method == 'KMeans') loadKMeansControls();
 		else if(method == 'Regression') loadRegressionControls();
+		else if(method == 'SVM') loadSVMControls();
+		$('#paramMethod').text(method + ' parameters:');
+	});
+}
+
+function bindDataChangeEvent() {
+	$('#dataselect').change(function() {
+		var datasetIdx = $("#dataselect :selected").attr('idx');
+		var datasetsAttrs = dataList.map(function(item) { return item['dimensions'];}),
+			datasetAttrs = datasetsAttrs[datasetIdx];
+		var attrGroup = $('div#attrgroup');
+		attrGroup.children().remove();
+		
+		for(var i = 0; i < datasetAttrs.length; ++i) {
+			var attrLabel = $('<label></label>')
+							.attr('class', 'attr')
+							.text(datasetAttrs[i]);
+			attrGroup.append(attrLabel);
+		}
 	});
 }
 

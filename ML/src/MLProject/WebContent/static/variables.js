@@ -1,3 +1,4 @@
+var dataList;
 var data;
 var numClusters;
 var initCenters = null;

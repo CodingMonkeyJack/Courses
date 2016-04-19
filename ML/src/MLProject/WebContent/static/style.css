@@ -2,3 +2,9 @@ div {
 	border-style: solid;
     border-width: 1px;
 }
+
+label.attr {
+	margin: 10px;
+	border-style: solid;
+	border-width: 1px;
+}

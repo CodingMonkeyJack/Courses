@@ -7,12 +7,14 @@
 <script src="lib/jquery-2.1.4.min.js"></script>
 <script src="lib/kmeanslib.js"></script>
 <script src="lib/regressionlib.js"></script>
+<script src="lib/svmlib.js"></script>
 <script src="lib/math.js"></script>
 <script src="lib/jquery-ui.min.js"></script>
 <script src="lib/d3.min.js"></script>
 <script src="static/variables.js"></script>
 <script src="static/kmeans.js"></script>
 <script src="static/regression.js"></script>
+<script src="static/svm.js"></script>
 <script src='static/main.js'></script>
 </head>
 <body>
@@ -21,17 +23,20 @@
 		<label>Please choose a datasource:</label>
 		<select id='dataselect'>
 		</select>
-		<button id='import' type='button'>Import</button>
+		<button id='import' type='button'>Import</button><br/>
+		<label>Attributes:</label>
+		<div id='attrgroup'></div>
 	</div>
 	<div id='ml' style="float: left; width: 400px;">
 		<label class='method'>KMeans</label>
-		<label class='method'>KNN</label>
 		<label class='method'>SVM</label>
 		<label class='method'>Regression</label>
 	</div>
 	<br style="clear: left;" />
 </div>
-<div id='params' style="float: left; width: 500px;">Parameters</div>
+<label id='paramMethod'>Parameters</label><br/>
+<div id='params' style="float: left; width: 500px;">
+</div>
 <div id='space' style="float: left; width: 500px;">Space</div>
 </body>
 </html>

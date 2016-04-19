@@ -6,4 +6,11 @@ Andrew Crotty, Alex Galakatos, Emanuel Zgraggen, Carsten Binnig, and Tim
 \newblock Vizdom: interactive analytics through pen and touch.
 \newblock {\em Proceedings of the VLDB Endowment}, 8(12):2024--2027, 2015.
 
+\bibitem{smith1988using}
+Jack~W Smith, JE~Everhart, WC~Dickson, WC~Knowler, and RS~Johannes.
+\newblock Using the adap learning algorithm to forecast the onset of diabetes
+  mellitus.
+\newblock In {\em Proceedings of the Annual Symposium on Computer Application
+  in Medical Care}, page 261. American Medical Informatics Association, 1988.
+
 \end{thebibliography}

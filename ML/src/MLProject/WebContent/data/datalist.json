@@ -1,4 +1,8 @@
 [
-	{"dataset": "dataset1", "dimensions": [], "description": "kmeans 2d dataset"},
-	{"dataset": "dataset2", "dimensions": [], "description": "linear regression 2d dataset"}
+	{"dataset": "dataset1", "dimensions": ["x", "y"], "description": "kmeans 2d dataset"},
+	{"dataset": "dataset2", "dimensions": ["x", "y"], "description": "linear regression 2d dataset"},
+	{"dataset": "dataset3", "dimensions": ["number of times pregnant", "plasma glucose concentration",
+		"blood pressure",  "triceps skin fold thickness", "2-Hour serum insulin", 
+		"body mass index", "diabetes pedigree function", "age"], 
+		"description": "Pima Indians Diabetes Database"}
 ]
