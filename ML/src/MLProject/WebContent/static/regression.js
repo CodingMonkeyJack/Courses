@@ -91,7 +91,7 @@ function bindEndPointsEvent() {
 		
 		var regLine = d3.select('#regline');
 		var newValX1, newValY1, newValX2, newValY2;
-		console.log(d3.select(this).attr('position'));
+
 		if(d3.select(this).attr('position') == 'start') {
 			regLine.attr('x1', newX);
 			regLine.attr('y1', newY);
@@ -110,7 +110,7 @@ function bindEndPointsEvent() {
 			newValY2 = y.invert(newY - margin.top);
 		}
 		
-		console.log(newValX1 + " " + newValY1 + "," + newValX2 + " " + newValY2);
+		// console.log(newValX1 + " " + newValY1 + "," + newValX2 + " " + newValY2);
 		
 		m = (newValY1 - newValY2) / (newValX1 - newValX2);
 		b = newValY1 - m * newValX1;
