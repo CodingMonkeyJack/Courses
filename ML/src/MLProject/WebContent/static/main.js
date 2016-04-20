@@ -128,7 +128,15 @@ function bindDataChangeEvent() {
 			helper : 'clone',
 			stop: function(event, ui) {
 				if($(this).overlaps('div#space')) {
-					$('div#spaceAttrs').append($(this));
+					$('div#spaceAttrs').append($(this).clone());
+					$('div#spaceAttrs').children().draggable();
+					$('div#spaceAttrs').children().draggable({
+						helper: 'originial',
+						stop: function() {
+							$(this).draggable("destroy");
+							$(this).remove();
+						}
+					});
 				}
 			}
 		});
