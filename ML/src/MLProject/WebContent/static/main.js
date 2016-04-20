@@ -104,6 +104,8 @@ function plotScatterplot(data) {
 
 function bindMethodEvent() {
 	$('.method').click(function(){
+		$('div#space').children().remove();
+		
 		var method = $(this).text().trim();
 		if(method == 'KMeans') loadKMeansControls();
 		else if(method == 'Regression') loadRegressionControls();
