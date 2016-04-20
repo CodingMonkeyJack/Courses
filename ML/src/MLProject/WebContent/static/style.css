@@ -25,3 +25,13 @@ button {
 	margin-right: 20px;
 	margin-bottom: 20px;
 }
+
+table {
+	color: gray;
+}
+
+input[type="text"]{
+   -moz-box-sizing:    border-box;
+   -webkit-box-sizing: border-box;
+    box-sizing:        border-box;
+}

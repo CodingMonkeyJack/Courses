@@ -6,45 +6,61 @@
 function loadKMeansControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
-	var controlHolder = $("<form></form>");
+	var controlHolder = $("<div></div>");
+
+	var initCentersHolderControl = $("<div></div>");
+	var initCentersRandomRadio = $("<input type='radio' name='initcenters' value='random' checked/>");
+	var initCentersRandomLabel = $("<label>Random</label>");
+	var initCentersSelectRadio = $("<input type='radio' name='initcenters' value='select'/>");
+	var initCentersSelectLabel = $("<label>Select</label>");
+	var clusterButton = $("<button id='cluster'>cluster</button>")
+						.attr('class', 'pure-button pure-button-active');
+	
+	initCentersHolderControl.append(initCentersRandomRadio);
+	initCentersHolderControl.append(initCentersRandomLabel);
+	initCentersHolderControl.append(initCentersSelectRadio);
+	initCentersHolderControl.append(initCentersSelectLabel);
+	initCentersHolderControl.append(clusterButton);
+	
+	var numClusterHolder = $("<div></div>");
+	var clusterNumLabel = $("<label style='margin-right:20px'># of clusters:</label>"),
+		clusterNumValLabel = $("<input type='text' id='numclusters' style='width:40px' value=2></input>");
 	var increaseKControl = $("<button id='incrK'>increase k</button>")
 							.attr('class', 'pure-button pure-button-active');
 	var decreaseKControl = $("<button id='decrK'>decrease k</button>")
 							.attr('class', 'pure-button pure-button-active');
+	numClusterHolder.append(clusterNumLabel)
+					.append(clusterNumValLabel)
+					.append(increaseKControl)
+					.append(decreaseKControl);
 	
-	var initCentersHolderControl = $("<div></div>");
-	var initCentersRandomRadio = $("<input type='radio' name='initcenters' value='random'/>");
-	var initCentersRandomLabel = $("<label></label>")
-								.attr('class', 'pure-radio');
-	initCentersRandomLabel.append(initCentersRandomRadio).append('Random');
-	var initCentersSelectRadio = $("<input type='radio' name='initcenters' value='select'/>");
-	var initCentersSelectLabel = $("<label></label>")
-								.attr('class', 'pure-radio');
-	initCentersSelectLabel.append(initCentersSelectRadio).append('Select');
-	var clusterButton = $("<button id='cluster'>cluster</button>")
-						.attr('class', 'pure-button pure-button-active');
-	
-	initCentersHolderControl.append(initCentersRandomLabel);
-	initCentersHolderControl.append(initCentersSelectLabel);
-	initCentersHolderControl.append(clusterButton);
-	
+	controlHolder.append(numClusterHolder);
 	controlHolder.append(initCentersHolderControl);
-	controlHolder.append(increaseKControl);
-	controlHolder.append(decreaseKControl);
 	controlHolder.attr('class', 'pure-form');
 	paramHolder.append(controlHolder);
 	
 	clusterButton.click(function(e) {
-		numClusters = initCenters.length;
-		console.log('clusters:' + numClusters);
-		kmeansClustering(numClusters);
+		numClusters = parseInt($('#numclusters').val());
+		var initStrategy = $("input[name='initcenters']:checked").val();
+		if(initStrategy == 'random') {
+			initCenters = null;
+			kmeansClustering(numClusters);
+		} else {
+			numClusters = initCenters.length;
+			kmeansClustering(numClusters);
+		}
 	});
 	
 	$("input[name='initcenters']").change(function() {
 		var value = $(this).val();
-		if(value == 'random') initCenters = null;
-		else initCenters = [];
-	});
+		if(value == 'random') {
+			initCenters = null; 
+		} else {
+			numClusters = 0;
+			$('#numclusters').val(numClusters);
+			initCenters = [];
+		}
+	}); 
 	
 	// select centers
 	$("#space").click(function(e) {
@@ -61,17 +77,23 @@ function loadKMeansControls() {
 		
 		var centerX = x.invert(offX - margin.left), centerY = y.invert(offY - margin.top);
 		initCenters.push([centerX, centerY]);
+		numClusters += 1;
+		$('#numclusters').val(numClusters);
 	});
 	
 	increaseKControl.click(function() {
 		// console.log('incrK');
 		numClusters += 1;
+		$('#numclusters').val(numClusters);
+		initCenters = null;
 		kmeansClustering(numClusters);
 	});
 	
 	decreaseKControl.click(function() {
 		// console.log('decrK');
 		numClusters -= 1;
+		$('#numclusters').val(numClusters);
+		initCenters = null;
 		kmeansClustering(numClusters);
 	});
 }
@@ -93,6 +115,7 @@ function colorPoints(centroids, clusters) {
 }
 
 function kmeansClustering(k) {
+	$('.initcenter').remove();
 	var km = new kMeans({
 		K: k,
 		initCentroids: initCenters

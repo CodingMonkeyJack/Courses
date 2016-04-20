@@ -1,7 +1,7 @@
 function loadSVMControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
-	var controlHolder = $("<form></form>");
+	var controlHolder = $("<div></div>");
 	var kernelHolder = $("<div></div>");
 	var linearKernelRadio = $("<input type='radio' name='kernel' value='linear' checked/>"),
 		linearKernelLabel = $("<label></label>"),
@@ -79,7 +79,7 @@ function showClassifyResult(classifyLabels, testLabels) {
 			else negIncorr += 1;
 		}
 	}
-	var accuracy = (posIncorr + negIncorr) * 1.0 / testLabels.length;
+	var accuracy = (posCorr + negCorr) * 1.0 / testLabels.length;
 	var	precision = posCorr * 1.0 / (posCorr + negIncorr);
 	var	recall = posCorr * 1.0 / (posCorr + posIncorr);
 	
@@ -99,7 +99,16 @@ function showClassifyResult(classifyLabels, testLabels) {
 	resultDiv.append(recallLabel);
 	resultDiv.append(recallValLabel);
 	
-	
+	console.log(posCorr + ' ' + posIncorr + ' ' + negCorr + ' ' + negIncorr);
+	/*var confusionTable = $('<table></table>');
+	var tableHeader = $('<tr><td>#</td><td>predicted pos</td><td>predicted neg</td></tr>');
+	var firstRow = $('<tr><td>true pos</td><td>' + posCorr + '</td><td>' + posIncorr + '</td></tr>');
+	var secondRow = $('<tr><td>neg pos</td><td>' + negCorr + '</td><td>' + negIncorr + '</td></tr>');
+	confusionTable.append(tableHeader)
+				.append(firstRow)
+				.append(secondRow);
+	confusionTable.attr('class', 'pure-table');
+	resultDiv.append(confusionTable); */
 }
 
 function svmClassify() {

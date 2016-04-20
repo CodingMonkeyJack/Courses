@@ -25,9 +25,9 @@ function loadRegressionControls() {
 	});
 	
 	var statusHolder = $("<div></div>");
-	var funLabel = $("<label style='margin-bottom:20px'>Function:<label>"),
+	var funLabel = $("<label style='margin-right:20px'>Function:<label>"),
 		realFunLabel = $("<label id='funLabel' style='margin-bottom:20px'></label><br/><br/>");
-	var squareLossLabel = $("<label style='margin-top:20px'>Square Loss:<label>");
+	var squareLossLabel = $("<label style='margin-right:20px'>Square Loss:<label>");
 	var squareLossValLabel = $("<label id='squareLoss' style='margin-top:20px'>0<label>");
 	
 	statusHolder.append(funLabel);
