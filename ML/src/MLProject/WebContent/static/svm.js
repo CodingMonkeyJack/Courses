@@ -3,7 +3,7 @@ function loadSVMControls() {
 	paramHolder.children().remove();
 	var controlHolder = $("<form></form>");
 	var kernelHolder = $("<div></div>");
-	var linearKernelRadio = $("<input type='radio' name='kernel' value='linear'/>"),
+	var linearKernelRadio = $("<input type='radio' name='kernel' value='linear' checked/>"),
 		linearKernelLabel = $("<label></label>"),
 		rbfKernelRadio = $("<input type='radio' name='kernel' value='rbf'/>"),
 		rbfKernelLabel = $("<label></label>");
@@ -19,7 +19,7 @@ function loadSVMControls() {
 	
 	var crossValidHolder = $("<div></div>");
 	var crossValidLabel = $("<label style='margin-left: 10px'>Cross Validation:</label>"),
-		crossValidInput = $("<input type='text' id='crossValidInput'>");
+		crossValidInput = $("<input type='text' id='crossValidInput' value=0.1>");
 	crossValidHolder.append(crossValidLabel);
 	crossValidHolder.append(crossValidInput);
 	
@@ -71,25 +71,27 @@ function showClassifyResult(classifyLabels, testLabels) {
 	var posCorr = 0, posIncorr = 0,
 		negCorr = 0, negIncorr = 0;
 	for(var i = 0; i < classifyLabels.length; ++i) {
-		if(testLabels[i] == 1) {
-			if(classifyLabels[i] == 1) posCorr += 1;
+		if(parseInt(testLabels[i]) == 1) {
+			if(parseInt(classifyLabels[i]) == 1) posCorr += 1;
 			else posIncorr += 1;
 		} else {
-			if(classifyLabels[i] == 0) negCorr += 1;
+			if(parseInt(classifyLabels[i]) == -1) negCorr += 1;
 			else negIncorr += 1;
 		}
 	}
-	var accuracy = (posIncorr + negIncorr) * 1.0 / testLabels.length,
-		precision = posCorr * 1.0 / (posCorr + negIncorr),
-		recall = posCorr * 1.0 / (posCorr + posIncorr);
+	var accuracy = (posIncorr + negIncorr) * 1.0 / testLabels.length;
+	var	precision = posCorr * 1.0 / (posCorr + negIncorr);
+	var	recall = posCorr * 1.0 / (posCorr + posIncorr);
 	
-	var accuracyLabel = $("<label>Accuracy:</label>"),
-		accuracyValLabel = $("<label></label>").text(accuracy),
-		precisionLabel = $("<label>Precision:</label>"),
-		precisionValLabel = $("<label></label>").text(precision),
-		recallLabel = $("<label>Recall:</label>"),
+	var accuracyLabel = $("<label style='margin-right: 20px'>Accuracy:</label>"),
+		accuracyValLabel = $("<label></label><br/><br/>").text(accuracy),
+		precisionLabel = $("<label style='margin-right: 20px'>Precision:</label>"),
+		precisionValLabel = $("<label></label><br/><br/>").text(precision),
+		recallLabel = $("<label style='margin-right: 20px'>Recall:</label>"),
 		recallValLabel = $("<label></label>").text(recall);
 	var resultDiv = $('div#spaceResult');
+	
+	resultDiv.children().remove();
 	resultDiv.append(accuracyLabel);
 	resultDiv.append(accuracyValLabel);
 	resultDiv.append(precisionLabel);
@@ -117,5 +119,7 @@ function svmClassify() {
 	var svm = new svmjs.SVM();
 	svm.train(normTrainData, trainLabels, {C: 1.0});
 	var classifyLabels = svm.predict(normTestData);
+	console.log(testLabels);
+	console.log(classifyLabels);
 	showClassifyResult(classifyLabels, testLabels);
 }

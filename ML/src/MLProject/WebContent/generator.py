@@ -62,7 +62,10 @@ def csvToJson():
             point['body_mass_index'] = row[5]
             point['diabetes_pedigree'] = row[6]
             point['age'] = row[7]
-            point['class'] = row[8]
+            if int(row[8]) == 0:
+                point['class'] = -1
+            else:
+                point['class'] = 1
             points.append(point)
     with open('data/dataset3.json', 'w') as dataFile:
         json.dump(points, dataFile)

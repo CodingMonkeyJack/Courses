@@ -5,6 +5,9 @@ function bindImportEvent() {
 		$.get("/loadData", {'datasetName': datasetName}, function(dataStr) {
 			data = JSON.parse(dataStr);
 		});
+		
+		//change attrs
+		updateAttrs();
 	});
 }
 
@@ -26,7 +29,6 @@ function initDatasetlist() {
 					.attr("idx", i)
 					.text(value)); 
 		});
-		bindDataChangeEvent();
 	});
 }
 
@@ -114,42 +116,37 @@ function bindMethodEvent() {
 	});
 }
 
-function bindDataChangeEvent() {
-	$('#dataselect').change(function() {
-		var datasetIdx = $("#dataselect :selected").attr('idx');
-		var datasetsAttrs = dataList.map(function(item) { return item['dimensions'];}),
-			datasetAttrs = datasetsAttrs[datasetIdx];
-		var attrGroup = $('#attrgroup');
-		attrGroup.children().remove();
-		
-		// show data attributes
-		for(var i = 0; i < datasetAttrs.length; ++i) {
-			var attrLabel = $('<div></div>')
-							.attr('class', 'attr')
-							.text(datasetAttrs[i]);
-			var attrLi = $('<li></li>').attr('class', 'pure-menu-item'),
-				attrLink = $('<a></a>').attr('href', '#')
-						.attr('class', 'pure-menu-link method')
-						.text(datasetAttrs[i]);
-			attrLi.append(attrLink);				
-			attrGroup.append(attrLi);
-		}
-		$('div.attr').draggable({
-			helper : 'clone',
-			stop: function(event, ui) {
-				if($(this).overlaps('div#space')) {
-					$('div#spaceAttrs').append($(this).clone());
-					$('div#spaceAttrs').children().draggable();
-					$('div#spaceAttrs').children().draggable({
-						helper: 'originial',
-						stop: function() {
-							$(this).draggable("destroy");
-							$(this).remove();
-						}
-					});
-				}
+function updateAttrs() {
+	var datasetIdx = $("#dataselect :selected").attr('idx');
+	var datasetsAttrs = dataList.map(function(item) { return item['dimensions'];}),
+		datasetAttrs = datasetsAttrs[datasetIdx];
+	var attrGroup = $('#attrgroup');
+	attrGroup.children().remove();
+	
+	// show data attributes
+	for(var i = 0; i < datasetAttrs.length; ++i) {
+		var attrLi = $('<li></li>').attr('class', 'pure-menu-item attr'),
+			attrLink = $('<a></a>').attr('href', '#')
+					.attr('class', 'pure-menu-link method')
+					.text(datasetAttrs[i]);
+		attrLi.append(attrLink);				
+		attrGroup.append(attrLi);
+	}
+	$('.attr').draggable({
+		helper : 'clone',
+		stop: function(event, ui) {
+			if($(this).overlaps('div#space')) {
+				$('div#spaceAttrs').append($(this).clone());
+				$('div#spaceAttrs').children().draggable();
+				$('div#spaceAttrs').children().draggable({
+					helper: 'originial',
+					stop: function() {
+						$(this).draggable("destroy");
+						$(this).remove();
+					}
+				});
 			}
-		});
+		}
 	});
 }
 
