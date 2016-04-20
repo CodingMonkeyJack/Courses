@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Interactive Machine Learning Interface</title>
+<link rel="stylesheet" href="lib/pure.min.css">
 <link rel="stylesheet" href="static/style.css">
 <script src="lib/jquery-2.1.4.min.js"></script>
 <script src="lib/kmeanslib.js"></script>
@@ -19,26 +20,37 @@
 <script src='static/main.js'></script>
 </head>
 <body>
-<div id='header'>
-	<div id='data' style="float: left; width: 500px;">
-		<label>Please choose a datasource:</label>
-		<select id='dataselect'>
-		</select>
-		<button id='import' type='button'>Import</button>
-		<button id='plot' type='button'>Plot</button>
-		<br/>
-		<label>Attributes:</label>
-		<div id='attrgroup'></div>
+<div style='float:left; width:500px'>
+	<div id='ml' style="float: left; width: 400px;" class="pure-menu pure-menu-horizontal">
+	    <a href="#" class="pure-menu-heading pure-menu-link">Methods:</a>
+	    <ul class="pure-menu-list">
+	        <li class="pure-menu-item"><a href="#" class="pure-menu-link method">KMeans</a></li>
+	        <li class="pure-menu-item"><a href="#" class="pure-menu-link method">Regression</a></li>
+	        <li class="pure-menu-item"><a href="#" class="pure-menu-link method">SVM</a></li>
+	    </ul>
 	</div>
-	<div id='ml' style="float: left; width: 400px;">
-		<label class='method'>KMeans</label>
-		<label class='method'>SVM</label>
-		<label class='method'>Regression</label>
+	<br/>
+	<div id='data' style="float: left; width: 400px;">
+		<form class="pure-form">
+			<label for='dataselect'>Data Source:</label>
+			<select id='dataselect'>
+			</select>
+			<button id='import' type='button' class="pure-button pure-button-primary">Import</button>
+			<button id='plot' type='button' class="pure-button pure-button-primary">Plot</button>
+		</form>
+		<br/>
+		<div class="pure-menu custom-restricted-width">
+		    <a href="#" class="pure-menu-heading pure-menu-link">Attributes:</a>
+		    <ul class="pure-menu-list" id='attrgroup'>
+		    </ul>
+		</div>
+	</div>
+	<br/>
+	<div id='paramHolder' style="float: left; width: 400px;">
+		<div id='params'>
+	</div>
 	</div>
 	<br style="clear: left;" />
-</div>
-<label id='paramMethod'>Parameters</label><br/>
-<div id='params' style="float: left; width: 500px;">
 </div>
 <div id='space' style="float: left; width: 500px;">Space</div>
 </body>

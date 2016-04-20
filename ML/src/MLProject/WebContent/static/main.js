@@ -105,7 +105,12 @@ function bindMethodEvent() {
 		if(method == 'KMeans') loadKMeansControls();
 		else if(method == 'Regression') loadRegressionControls();
 		else if(method == 'SVM') loadSVMControls();
-		$('#paramMethod').text(method + ' parameters:');
+		var parameterHeader = $("<a></a>")
+							.attr('class', "pure-menu-heading pure-menu-link")
+							.attr('href', '#')
+							.text(method + ' parameters');
+		$('#paramHolder').children('a').remove();
+		$('#paramHolder').prepend(parameterHeader);
 	});
 }
 
@@ -114,7 +119,7 @@ function bindDataChangeEvent() {
 		var datasetIdx = $("#dataselect :selected").attr('idx');
 		var datasetsAttrs = dataList.map(function(item) { return item['dimensions'];}),
 			datasetAttrs = datasetsAttrs[datasetIdx];
-		var attrGroup = $('div#attrgroup');
+		var attrGroup = $('#attrgroup');
 		attrGroup.children().remove();
 		
 		// show data attributes
@@ -122,7 +127,12 @@ function bindDataChangeEvent() {
 			var attrLabel = $('<div></div>')
 							.attr('class', 'attr')
 							.text(datasetAttrs[i]);
-			attrGroup.append(attrLabel);
+			var attrLi = $('<li></li>').attr('class', 'pure-menu-item'),
+				attrLink = $('<a></a>').attr('href', '#')
+						.attr('class', 'pure-menu-link method')
+						.text(datasetAttrs[i]);
+			attrLi.append(attrLink);				
+			attrGroup.append(attrLi);
 		}
 		$('div.attr').draggable({
 			helper : 'clone',

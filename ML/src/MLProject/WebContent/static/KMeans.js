@@ -6,20 +6,25 @@
 function loadKMeansControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
-	var controlHolder = $("<div></div>");
-	var increaseKControl = $("<button id='incrK'>increase k</button>");
-	var decreaseKControl = $("<button id='decrK'>decrease k</button>");
+	var controlHolder = $("<form></form>").attr('class', 'pure-form');
+	var increaseKControl = $("<button id='incrK'>increase k</button>")
+							.attr('class', 'pure-button pure-button-active');
+	var decreaseKControl = $("<button id='decrK'>decrease k</button>")
+							.attr('class', 'pure-button pure-button-active');
 	
 	var initCentersHolderControl = $("<div></div>");
 	var initCentersRandomRadio = $("<input type='radio' name='initcenters' value='random'/>");
-	var initCentersRandomLabel = $("<label></label>").text('Random');
+	var initCentersRandomLabel = $("<label></label>")
+								.attr('class', 'pure-radio');
+	initCentersRandomLabel.append(initCentersRandomRadio).append('Random');
 	var initCentersSelectRadio = $("<input type='radio' name='initcenters' value='select'/>");
-	var initCentersSelectLabel = $("<label></label>").text('Select');
-	var clusterButton = $("<button id='cluster'>cluster</button>");
+	var initCentersSelectLabel = $("<label></label>")
+								.attr('class', 'pure-radio');
+	initCentersSelectLabel.append(initCentersSelectRadio).append('Select');
+	var clusterButton = $("<button id='cluster'>cluster</button>")
+						.attr('class', 'pure-button pure-button-active');
 	
-	initCentersHolderControl.append(initCentersRandomRadio);
 	initCentersHolderControl.append(initCentersRandomLabel);
-	initCentersHolderControl.append(initCentersSelectRadio);
 	initCentersHolderControl.append(initCentersSelectLabel);
 	initCentersHolderControl.append(clusterButton);
 	
