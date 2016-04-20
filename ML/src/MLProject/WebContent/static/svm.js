@@ -18,7 +18,7 @@ function loadSVMControls() {
 	kernelHolder.append(rbfKernelLabel);
 	
 	var crossValidHolder = $("<div></div>");
-	var crossValidLabel = $("<label style='margin-left: 10px'>Cross Validation:</label>"),
+	var crossValidLabel = $("<label style='margin-left: 10px; margin-right: 20px'>Cross Validation:</label>"),
 		crossValidInput = $("<input type='text' id='crossValidInput' value=0.1>");
 	crossValidHolder.append(crossValidLabel);
 	crossValidHolder.append(crossValidInput);
@@ -98,9 +98,10 @@ function showClassifyResult(classifyLabels, testLabels) {
 	resultDiv.append(precisionValLabel);
 	resultDiv.append(recallLabel);
 	resultDiv.append(recallValLabel);
+	resultDiv.append('<br/><br/>');
 	
-	console.log(posCorr + ' ' + posIncorr + ' ' + negCorr + ' ' + negIncorr);
-	/*var confusionTable = $('<table></table>');
+	// console.log(posCorr + ' ' + posIncorr + ' ' + negCorr + ' ' + negIncorr);
+	var confusionTable = $('<table></table>');
 	var tableHeader = $('<tr><td>#</td><td>predicted pos</td><td>predicted neg</td></tr>');
 	var firstRow = $('<tr><td>true pos</td><td>' + posCorr + '</td><td>' + posIncorr + '</td></tr>');
 	var secondRow = $('<tr><td>neg pos</td><td>' + negCorr + '</td><td>' + negIncorr + '</td></tr>');
@@ -108,10 +109,12 @@ function showClassifyResult(classifyLabels, testLabels) {
 				.append(firstRow)
 				.append(secondRow);
 	confusionTable.attr('class', 'pure-table');
-	resultDiv.append(confusionTable); */
+	resultDiv.append(confusionTable); 
 }
 
 function svmClassify() {
+	$('#spaceResult').children().remove();
+	
 	var crossValidHoldPercent = parseFloat($('#crossValidInput').val()),
 		kernel = $("input[name='kernel']:checked").val();
 	var trainTestData = crossValid(crossValidHoldPercent);
@@ -126,9 +129,8 @@ function svmClassify() {
 	var trainLabels = trainData.map(function(point) {return parseInt(point['class']);}),
 		testLabels = testData.map(function(point) {return parseInt(point['class']);});
 	var svm = new svmjs.SVM();
-	svm.train(normTrainData, trainLabels, {C: 1.0});
+	if(kernel == 'linear') svm.train(normTrainData, trainLabels, {C: 1.0});
+	else svm.train(normTrainData, trainLabels, {kernel: 'rbf', rbfsigma: 0.5});
 	var classifyLabels = svm.predict(normTestData);
-	console.log(testLabels);
-	console.log(classifyLabels);
 	showClassifyResult(classifyLabels, testLabels);
 }

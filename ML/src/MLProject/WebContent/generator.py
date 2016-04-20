@@ -69,6 +69,30 @@ def csvToJson():
             points.append(point)
     with open('data/dataset3.json', 'w') as dataFile:
         json.dump(points, dataFile)
+#irs dataset
+def csvToJson():
+    points = []
+    i = 0
+    with open('data/iris.data.txt', 'r') as inputFile:
+        inputReader = csv.reader(inputFile)
+        for row in inputReader:
+            print (row)
+            i += 1
+            type = row[4]
+            if type == 'Iris-virginica':
+                continue
+            point = {}
+            point['sepal_length'] = row[0]
+            point['sepal_width'] = row[1]
+            point['petal_length'] = row[2]
+            point['petal_width'] = row[3]
+            if type == 'Iris-setosa':
+                point['class'] = 1
+            else:
+                point['class'] = -1
+            points.append(point)
+    with open('data/dataset3.json', 'w') as dataFile:
+        json.dump(points, dataFile)
 
 if __name__ == '__main__':
     #genKMeansData()

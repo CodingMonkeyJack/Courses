@@ -33,6 +33,7 @@ function initDatasetlist() {
 }
 
 function plotScatterplot(data) {
+	$('#space').children().remove();
 	var width = spaceWidth - margin.left - margin.right,
 	height = spaceHeight - margin.top - margin.bottom;
 
