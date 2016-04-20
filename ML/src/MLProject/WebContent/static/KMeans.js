@@ -6,7 +6,7 @@
 function loadKMeansControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
-	var controlHolder = $("<form></form>").attr('class', 'pure-form');
+	var controlHolder = $("<form></form>");
 	var increaseKControl = $("<button id='incrK'>increase k</button>")
 							.attr('class', 'pure-button pure-button-active');
 	var decreaseKControl = $("<button id='decrK'>decrease k</button>")
@@ -31,6 +31,7 @@ function loadKMeansControls() {
 	controlHolder.append(initCentersHolderControl);
 	controlHolder.append(increaseKControl);
 	controlHolder.append(decreaseKControl);
+	controlHolder.attr('class', 'pure-form');
 	paramHolder.append(controlHolder);
 	
 	clusterButton.click(function(e) {

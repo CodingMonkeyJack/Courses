@@ -13,7 +13,8 @@ function loadRegressionControls() {
 	var regTypeHolder = $("<div></div>");
 	var linearRadio = $("<input type='radio' name='regtypes' value='linear'/>");
 	var linearLabel = $("<label></label>").text('Linear Regression');
-	var runButton = $("<button id='run'>Run</button>");
+	var runButton = $("<button id='run'>Run</button>")
+					.attr('class', 'pure-button');
 	regTypeHolder.append(linearRadio);
 	regTypeHolder.append(linearLabel);
 	regTypeHolder.append(runButton);
@@ -24,10 +25,10 @@ function loadRegressionControls() {
 	});
 	
 	var statusHolder = $("<div></div>");
-	var funLabel = $("<label>Function:<label>"),
-		realFunLabel = $("<label id='funLabel'></label><br/>");
-	var squareLossLabel = $("<label>Square Loss:<label>");
-	var squareLossValLabel = $("<label id='squareLoss'>Square Loss:<label>");
+	var funLabel = $("<label style='margin-bottom:20px'>Function:<label>"),
+		realFunLabel = $("<label id='funLabel' style='margin-bottom:20px'></label><br/><br/>");
+	var squareLossLabel = $("<label style='margin-top:20px'>Square Loss:<label>");
+	var squareLossValLabel = $("<label id='squareLoss' style='margin-top:20px'>0<label>");
 	
 	statusHolder.append(funLabel);
 	statusHolder.append(realFunLabel);

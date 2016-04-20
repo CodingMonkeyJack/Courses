@@ -1,19 +1,24 @@
 function loadSVMControls() {
 	var paramHolder = $("div#params");
 	paramHolder.children().remove();
-	var controlHolder = $("<div></div>");
+	var controlHolder = $("<form></form>");
 	var kernelHolder = $("<div></div>");
 	var linearKernelRadio = $("<input type='radio' name='kernel' value='linear'/>"),
-		linearKernelLabel = $("<label>linear</label>"),
+		linearKernelLabel = $("<label></label>"),
 		rbfKernelRadio = $("<input type='radio' name='kernel' value='rbf'/>"),
-		rbfKernelLabel = $("<label>Rbf</label>");
-	kernelHolder.append(linearKernelRadio);
+		rbfKernelLabel = $("<label></label>");
+	linearKernelLabel.append(linearKernelRadio)
+					.append('Linear')
+					.attr('class', 'pure-radio');
+	rbfKernelLabel.append(rbfKernelRadio)
+					.append('Rbf')
+					.attr('class', 'pure-radio');
+	
 	kernelHolder.append(linearKernelLabel);
-	kernelHolder.append(rbfKernelRadio);
 	kernelHolder.append(rbfKernelLabel);
 	
 	var crossValidHolder = $("<div></div>");
-	var crossValidLabel = $("<label>Cross Validation:</label>"),
+	var crossValidLabel = $("<label style='margin-left: 10px'>Cross Validation:</label>"),
 		crossValidInput = $("<input type='text' id='crossValidInput'>");
 	crossValidHolder.append(crossValidLabel);
 	crossValidHolder.append(crossValidInput);
@@ -23,7 +28,8 @@ function loadSVMControls() {
 	paramHolder.append(crossValidHolder);
 	paramHolder.append("<br/>");
 	
-	var classifyButton = $("<button id='classify'>Classify</button>");
+	var classifyButton = $("<button id='classify'>Classify</button>")
+						.attr('class', 'pure-button');
 	paramHolder.append(classifyButton);
 	$("#classify").click(function() {
 		svmClassify();
