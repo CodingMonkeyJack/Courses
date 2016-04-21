@@ -26,7 +26,7 @@ for i = 1: trainTestN
     trainTestData(i, :) = trainData(TestInd(i), :);
 end
 
-treeNum = 10;
+treeNum = 20;
 B = TreeBagger(treeNum, trainTrainData, trainTrainYs);
 predTrainLabels = predict(B, trainTestData);
 trainError = 0;

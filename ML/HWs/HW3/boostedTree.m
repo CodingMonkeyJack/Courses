@@ -26,7 +26,7 @@ for i = 1: trainTestN
     trainTestData(i, :) = trainData(TestInd(i), :);
 end
 
-ens = fitensemble(trainTrainData, trainTrainYs, 'AdaBoostM1', 100, 'Tree');
+ens = fitensemble(trainTrainData, trainTrainYs, 'AdaBoostM1', 200, 'Tree');
 predTrainLabels = predict(ens, trainTestData);
 trainError = 0;
 for i = 1 : trainTestN

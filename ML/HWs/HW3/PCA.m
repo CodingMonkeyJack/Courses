@@ -1,9 +1,15 @@
-Y = [ones(1000, 1); -ones(1000, 1)];
 load('train79.mat');
 trainData = d79;
-load('test79.mat');
-testData = d79;
 
-coeffs = pca(trainData);
+trainData = bsxfun(@minus, trainData, mean(trainData, 1));           
+C = cov(trainData);
+
+[V D] = eig(C);
+[D order] = sort(diag(D), 'descend');       
+V = V(:, order);
+
+trainData = trainData * V(:, 1: 2);
 cdata = [ones(1000, 1) * [1 0 0]; ones(1000, 1) * [0 0 1]];
-scatter(trainData * coeffs(:, 1), trainData * coeffs(:, 2), 'o', 'cdata', cdata)
+size(trainData)
+scatter(trainData(:, 1), trainData(:, 2), 'o', 'cdata', cdata)
+
