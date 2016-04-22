@@ -1,7 +1,7 @@
 var kMeans = require('kmeans-js');
 var fs = require("fs");
 var filePrefix = 'kmeansData/mulNorm_';
-var numPoints = [1000, 1500, 2000];
+var numPoints = [500, 1000, 1500, 2000];
 var numClusters = [2, 5, 10, 20];
 var results = [];
 

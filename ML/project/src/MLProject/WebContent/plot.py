@@ -10,8 +10,10 @@ def plotSVM():
         
         plt.figure()
         plt.plot(num_points, run_times, 'bs', num_points, run_times)
-        plt.xlabel('num of points')
-        plt.ylabel('run time (ms)')
+        plt.xlabel('num of points', fontsize=25)
+        plt.ylabel('run time (ms)', fontsize=25)
+        plt.xticks(fontsize = 25)
+        plt.yticks(fontsize = 25)
         #plt.show()
         plt.savefig('figs/svm_result.pdf', bbox_inches='tight')
 
@@ -27,25 +29,29 @@ def plotKmeans():
             run_times = [item['time'] for item in data if int(item['num_points']) == num_point]
             line, = plt.plot(num_clusters, run_times, '-s')
             lines.append(line)
-            plt.legend(lines, num_points, title="num of points", loc="upper left")
-        plt.xlabel('num of clusters')
-        plt.ylabel('run time (ms)')
+            legend = plt.legend(lines, num_points, title="num of points", loc="upper left", fontsize=25)
+        plt.xlabel('num of clusters', fontsize=25)
+        plt.ylabel('run time (ms)', fontsize=25)
+        plt.xticks(fontsize = 25)
+        plt.yticks(fontsize = 25)
+        plt.setp(legend.get_title(), fontsize=25)
         plt.savefig('figs/kmeans_result.pdf', bbox_inches='tight')
 
 def plotRegression():
     with open('regressionData/result.json', 'r') as result:
         data = json.loads(result.read())
         num_points = [item['num_points'] for item in data]
-        run_times = [item['time'] for item in data]
+        run_times = [item['update_time'] for item in data]
         
         plt.figure()
         plt.plot(num_points, run_times, 'bs', num_points, run_times)
         plt.xlabel('num of points')
         plt.ylabel('run time (ms)')
+        
         #plt.show()
         plt.savefig('figs/regression_result.pdf', bbox_inches='tight')
 
 if __name__ == '__main__':
-    #plotSVM()
-    #plotKmeans()
-    plotRegression()
+    plotSVM()
+    plotKmeans()
+    #plotRegression()

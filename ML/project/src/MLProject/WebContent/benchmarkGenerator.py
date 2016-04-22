@@ -26,7 +26,7 @@ def genMultiNormData(numPoint):
     return points
         
 def genKMeansData():
-    numPoints = [1000, 1500, 2000]
+    numPoints = [500, 1000, 1500, 2000]
     for numPoint in numPoints:
         points = np.asarray(genMultiNormData(numPoint))
         filePath = 'kmeansData/mulNorm_' + str(numPoint) + '.csv'
