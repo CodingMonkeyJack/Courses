@@ -1,5 +1,6 @@
 var fs = require("fs");
-var filePrefix = 'regression/linear_';
+var regression = require('regression');
+var filePrefix = 'regressionData/linear_';
 var numPoints = [100000, 2000000, 500000, 1000000];
 var results = [];
 
@@ -22,10 +23,13 @@ for(var i = 0; i < numPoints.length; ++i) {
 	var data = file.toString();
 	var points = getRows(data);
 	
-	console.log(points.length);
-	
 	var result = {};
 	result['num_points'] = numPoints[i];
+	
+	var startTime = (new Date()).getTime();
+	regression('linear', points);
+	var endTime = (new Date()).getTime();
+	result['regression_time'] = (endTime - startTime);
 	
 	var startTime = (new Date()).getTime();
 	var loss = 0;
@@ -36,9 +40,9 @@ for(var i = 0; i < numPoints.length; ++i) {
 		loss += diff * diff;
 	}
 	var endTime = (new Date()).getTime();
-	result['time'] = (endTime - startTime);
+	result['update_time'] = (endTime - startTime);
 	results.push(result);
 }
-var resultFilePath = 'regression/result.json';
+var resultFilePath = 'regressionData/result.json';
 var resultsStr = JSON.stringify(results);
 fs.writeFileSync(resultFilePath, resultsStr);

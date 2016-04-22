@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  21 APR 2016 20:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  22 APR 2016 11:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -246,7 +246,14 @@ Package: footnote 1997/01/28 1.13 Save footnotes around boxes
 \fn@notes=\box30
 \fn@width=\dimen132
 )
-(./main.aux)
+(./main.aux
+
+LaTeX Warning: Label `fig:svm' multiply defined.
+
+
+LaTeX Warning: Label `fig:svm@cref' multiply defined.
+
+)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
@@ -354,38 +361,45 @@ Package pdftex.def Info: figs/svm.png used on input line 60.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 71--72
-
- []
-
-[1
+File: figs/svm.png Graphic file (type png)
+<use figs/svm.png>
+Package pdftex.def Info: figs/svm.png used on input line 71.
+(pdftex.def)             Requested size: 345.0pt x 174.55641pt.
+ [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 74--75
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 77--78
 
  []
 
-(./main.bbl [2 <./figs/kmeans.png>]) [3 <./figs/linearregression.png>] [4 <./fi
-gs/svm.png>] (./main.aux) ) 
+(./main.bbl [2 <./figs/kmeans.png>] [3 <./figs/linearregression.png>]) [4 <./fi
+gs/svm.png>] [5] (./main.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 5205 strings out of 493089
- 83958 string characters out of 6134842
+ 5206 strings out of 493089
+ 83956 string characters out of 6134842
  164180 words of memory out of 5000000
  8593 multiletter control sequences out of 15000+600000
- 9061 words of font info for 33 fonts, out of 8000000 for 9000
+ 9062 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,15n,25p,1134b,256s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr17.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmti10.pfb>
-Output written on main.pdf (4 pages, 361594 bytes).
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
+usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></us
+r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/
+local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on main.pdf (5 pages, 374151 bytes).
 PDF statistics:
- 44 PDF objects out of 1000 (max. 8388607)
- 26 compressed objects within 1 object stream
+ 51 PDF objects out of 1000 (max. 8388607)
+ 31 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

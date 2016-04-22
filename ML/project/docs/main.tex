@@ -64,6 +64,14 @@ The overall space is divided into two parts: the left part shows what kind of ma
 
 \section{Performance Experiments}
 In this section, we focus on performance experiments since in the interactive environment, it is necessary to keep an interactive performance. \\
+\textbf{Computer Configuration:} \\
+\textbf{Dataset:} For SVM, we use Skin Segmentation Data Set from UCI~\cite{skinsegment}.  There are totally 3 numerical attributes and 2 classes. We randomly sample from both classes. \\
+\textbf{Results:} \\
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{figs/svm}
+	\label{fig:svm}
+	\caption{SVM}
+\end{figure} 
 
 \section{Limitations \& Conclusions}
 In this project, we focus on usability point. There are several limitations for this project. The first is interactive performance. The second is project issue for high-dimensional dataset. \emph{Projection} is a technique that maps high-dimensional dataset into a small set of dimensions. Some works use dimension reduction, that create latent dimensions that summarize dataset. For example, Principal Component Analysis (PCA)~\cite{jolliffe2002principal}, Multidimensional Scaling (MDS)~\cite{mead1992review}. This method can reveal hidden variables. However, the generated dimensions are usually less intuitive to users. Another method is called feature selection, which selects subset of features to explore. Interactive feature selection is often used to identify relationship between features~\cite{guo2003coordinating, yang2004value} and aid user remove redundant features and choose appropriate features. Recently, there is a work trying to allow users to craft their own projection function~\cite{gleicher2013explainers}.  All these methods can be easily incorporated into our project.  \\

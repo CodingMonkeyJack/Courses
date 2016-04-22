@@ -1,9 +1,10 @@
 var svm = require("svm");
 var fs = require("fs");
+var math = require('mathjs');
 var filePrefix = 'SVMData/sample_';
-// var numPoints = [490, 980, 2450, 4900, 49010];
-var numPoints = [490];
+var numPoints = [244, 366, 490, 734];
 var results = [];
+var svm = new svm.SVM();
 
 function getRows(data) {
 	var rows = [];
@@ -39,18 +40,23 @@ for(var i = 0; i < numPoints.length; ++i) {
 	var data = file.toString();
 	var rows = getRows(data);
 	
+	var holdPercent = 0.1;
+	
 	var result = {};
 	result['num_points'] = numPoints[i];
+	result['hold_percent'] = holdPercent;
 	
-	var trainTestData = crossValid(rows, 0.1);
+	var trainTestData = crossValid(rows, holdPercent);
 	var trainData = trainTestData[0], testData = trainTestData[1],
 		trainLabels = trainTestData[2], testLabels = trainTestData[3];
 	
-	var svm = new svmjs.SVM();
-	svm.train(normTrainData, trainLabels, {C: 1.0});
+	var startTime = (new Date()).getTime();
+	svm.train(trainData, trainLabels, {C: 1.0});
 	var classifyLabels = svm.predict(testData);
-	
+	var endTime = (new Date()).getTime();
+	result['time'] = endTime - startTime;
+	results.push(result);
 }
-var resultFilePath = 'kmeansData/result.json';
+var resultFilePath = 'SVMData/result.json';
 var resultsStr = JSON.stringify(results);
 fs.writeFileSync(resultFilePath, resultsStr);

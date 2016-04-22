@@ -1,7 +1,7 @@
 var kMeans = require('kmeans-js');
 var fs = require("fs");
 var filePrefix = 'kmeansData/mulNorm_';
-var numPoints = [1000, 2000, 5000, 10000, 20000];
+var numPoints = [1000, 1500, 2000];
 var numClusters = [2, 5, 10, 20];
 var results = [];
 
@@ -23,11 +23,12 @@ for(var i = 0; i < numPoints.length; ++i) {
 	var data = file.toString();
 	var rows = getRows(data);
 	
-	var result = {};
-	result['num_points'] = numPoints[i];
-	
 	for(var j = 0; j < numClusters.length; ++j) {
+		var result = {};
+		result['num_points'] = numPoints[i];
 		result['num_clusters'] = numClusters[j];
+		
+		console.log(numPoints[i] + ' ' + numClusters[j]);
 		
 		var numCluster = numClusters[j];
 		var km = new kMeans({
@@ -35,12 +36,15 @@ for(var i = 0; i < numPoints.length; ++i) {
 		});
 		
 		var startTime = (new Date()).getTime();
+		var iter = 0, maxIter = 100;
 		km.cluster(data);
 		while (km.step()) {
+			iter += 1;
 		    km.findClosestCentroids();
 		    km.moveCentroids();
-
-		    if(km.hasConverged()) break;
+		    
+		    if(iter >= maxIter) break;
+		    // if(km.hasConverged()) break;
 		}
 		var endTime = (new Date()).getTime();
 		

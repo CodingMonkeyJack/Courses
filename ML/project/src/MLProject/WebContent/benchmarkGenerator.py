@@ -26,7 +26,7 @@ def genMultiNormData(numPoint):
     return points
         
 def genKMeansData():
-    numPoints = [1000, 2000, 5000, 10000, 20000]
+    numPoints = [1000, 1500, 2000]
     for numPoint in numPoints:
         points = np.asarray(genMultiNormData(numPoint))
         filePath = 'kmeansData/mulNorm_' + str(numPoint) + '.csv'
@@ -52,7 +52,7 @@ def genLinearRegressionData():
         np.savetxt(filePath, points, delimiter=",")
 
 def genSVMData():
-    sampleRates = [0.001, 0.002, 0.005, 0.1]
+    sampleRates = [0.001, 0.0015, 0.002, 0.003]
     with open('SVMData/Skin_NonSkin.txt') as file:
         tsvin = csv.reader(file, delimiter='\t')
         skinData = []
@@ -66,15 +66,14 @@ def genSVMData():
                 nonSkinData.append(row)
         numPoints = len(skinData) + len(nonSkinData)
         for sampleRate in sampleRates:
-            numSample = int(math.floor(numPoints * sampleRate))
+            numSample = int(math.floor(numPoints * sampleRate / 2))
             skinSample = random.sample(skinData, numSample)
             nonSkinSample = random.sample(nonSkinData, numSample)
             allSample = np.asarray(skinSample + nonSkinSample)
             filePath = 'SVMData/sample_' + str(numSample * 2) + ".csv"
             np.savetxt(filePath, allSample, delimiter=",")
-            
-       
+               
 if __name__ == '__main__':
-    #genKMeansData()
+    genKMeansData()
     #genLinearRegressionData()
-    genSVMData()
+    #genSVMData()

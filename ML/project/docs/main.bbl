@@ -27,6 +27,11 @@ A~Mead.
 \newblock Review of the development of multidimensional scaling methods.
 \newblock {\em The Statistician}, 1992.
 
+\bibitem{skinsegment}
+Abhinav~Dhall Rajen~Bhatt.
+\newblock Skin segmentation dataset.
+\newblock {\em UCI Machine Learning Repository}.
+
 \bibitem{smith1988using}
 Jack~W Smith, JE~Everhart, WC~Dickson, WC~Knowler, and RS~Johannes.
 \newblock Using the adap learning algorithm to forecast the onset of diabetes
