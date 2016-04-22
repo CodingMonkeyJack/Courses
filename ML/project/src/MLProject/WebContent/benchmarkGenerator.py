@@ -33,5 +33,48 @@ def genKMeansData():
         with open(filePath, 'w') as dataFile:
             np.savetxt(filePath, points, delimiter=",")
 
+
+def genLinearRegressionData():
+    def fun(x):
+        return 5 * x + 6;
+    
+    numPoints = [100000, 2000000, 500000, 1000000]
+    for numPoint in numPoints:
+        noiseScale = 30
+        xs = np.random.random_sample(numPoint) * 10
+        ys = [fun(x) + random.random() * noiseScale for x in xs]
+        points = []
+        for x, y in zip(xs, ys):
+            point = [x, y]
+            points.append(point)
+        points = np.asarray(points)
+        filePath = 'regression/linear_' + str(numPoint) + '.csv'
+        np.savetxt(filePath, points, delimiter=",")
+
+def genSVMData():
+    sampleRates = [0.001, 0.002, 0.005, 0.1]
+    with open('SVMData/Skin_NonSkin.txt') as file:
+        tsvin = csv.reader(file, delimiter='\t')
+        skinData = []
+        nonSkinData = []
+        for line in tsvin:
+            label = int(line[3].strip())
+            row = [int(col) for col in line]
+            if label == 1:
+                skinData.append(row)
+            else:
+                nonSkinData.append(row)
+        numPoints = len(skinData) + len(nonSkinData)
+        for sampleRate in sampleRates:
+            numSample = int(math.floor(numPoints * sampleRate))
+            skinSample = random.sample(skinData, numSample)
+            nonSkinSample = random.sample(nonSkinData, numSample)
+            allSample = np.asarray(skinSample + nonSkinSample)
+            filePath = 'SVMData/sample_' + str(numSample * 2) + ".csv"
+            np.savetxt(filePath, allSample, delimiter=",")
+            
+       
 if __name__ == '__main__':
-    genKMeansData()
+    #genKMeansData()
+    #genLinearRegressionData()
+    genSVMData()
