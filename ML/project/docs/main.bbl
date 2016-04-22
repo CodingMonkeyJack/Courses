@@ -6,11 +6,38 @@ Andrew Crotty, Alex Galakatos, Emanuel Zgraggen, Carsten Binnig, and Tim
 \newblock Vizdom: interactive analytics through pen and touch.
 \newblock {\em Proceedings of the VLDB Endowment}, 8(12):2024--2027, 2015.
 
+\bibitem{gleicher2013explainers}
+Michael Gleicher.
+\newblock Explainers: Expert explorations with crafted projections.
+\newblock {\em TVCG}, 2013.
+
+\bibitem{guo2003coordinating}
+Diansheng Guo.
+\newblock Coordinating computational and visual approaches for interactive
+  feature selection and multivariate clustering.
+\newblock {\em Information Visualization}, 2003.
+
+\bibitem{jolliffe2002principal}
+Ian Jolliffe.
+\newblock {\em Principal component analysis}.
+\newblock 2002.
+
+\bibitem{mead1992review}
+A~Mead.
+\newblock Review of the development of multidimensional scaling methods.
+\newblock {\em The Statistician}, 1992.
+
 \bibitem{smith1988using}
 Jack~W Smith, JE~Everhart, WC~Dickson, WC~Knowler, and RS~Johannes.
 \newblock Using the adap learning algorithm to forecast the onset of diabetes
   mellitus.
 \newblock In {\em Proceedings of the Annual Symposium on Computer Application
   in Medical Care}, page 261. American Medical Informatics Association, 1988.
+
+\bibitem{yang2004value}
+Jing Yang et~al.
+\newblock Value and relation display for interactive exploration of high
+  dimensional datasets.
+\newblock In {\em INFOVIS}, 2004.
 
 \end{thebibliography}
