@@ -18,6 +18,12 @@ Helmut Doleisch et~al.
   in 3d.
 \newblock 2002.
 
+\bibitem{fisher2012trust}
+Danyel Fisher, Igor Popov, Steven Drucker, et~al.
+\newblock Trust me, i'm partially right: incremental visualization lets
+  analysts explore large datasets faster.
+\newblock In {\em SIGCHI}, 2012.
+
 \bibitem{gleicher2013explainers}
 Michael Gleicher.
 \newblock Explainers: Expert explorations with crafted projections.
